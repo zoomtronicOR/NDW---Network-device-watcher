@@ -12,6 +12,8 @@ It is designed to run in a small **Proxmox LXC container** (Debian), uses minima
 
 ---
 
+**Documentation:** [installation](docs/installation.md) · [user guide](docs/user-guide.md) · [configuration](docs/configuration.md) · [how detection works](docs/detection.md) · [integrations](docs/integrations.md) · [REST API](docs/api.md) · [architecture](docs/architecture.md) · [operations & troubleshooting](docs/operations.md) · [development](docs/development.md)
+
 ## Features
 
 **Discovery & detection**
@@ -114,6 +116,8 @@ systemctl daemon-reload
 systemctl enable --now networkwatcher-web networkwatcher-scanner networkwatcher-pinger \
                        networkwatcher-worker networkwatcher-sniffer
 ```
+
+See the [installation guide](docs/installation.md) for Proxmox container creation, an nginx reverse proxy with authentication, backup/restore and uninstall.
 
 Open `http://<container-ip>:8080`, go to **Podešavanja → Scanner**, set your network range(s) (e.g. `192.168.1.0/24`) and the interface. Everything else (MQTT, SMTP, webhook, Omada, quiet hours, themes, retention) is configured from the web UI and stored in the database; `SECRET_KEY` encrypts stored passwords.
 

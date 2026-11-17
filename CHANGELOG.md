@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
+## [Unreleased]
+
+### Added
+- Full documentation in `docs/`: installation (Proxmox LXC, reverse proxy, backup, upgrade, uninstall), user guide, configuration reference, how detection works, integrations (MQTT/Home Assistant, webhook, e-mail, Omada), REST API, architecture and data model, operations & troubleshooting, development and release process.
+
 ## [1.0.0] - 2026-11-17
 
 First public release.
