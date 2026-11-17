@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network Device Watcher &middot; Settings</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-title">
+      <span class="dot"></span>
+      <div>
+        <h1>Network Device Watcher</h1>
+        <p>Podešavanja</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>Dashboard</a>
+    <a class="tab" href="/devices.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>Uređaji</a>
+    <a class="tab" href="/ping.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>Ping</a>
+    <a class="tab" href="/events.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Istorija</a>
+    <a class="tab" href="/timemachine.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Network Time Machine</a>
+    <a class="tab active" href="/settings.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Podešavanja</a>
+    <a class="tab" href="/logs.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Sistem</a>
+    <a class="tab" href="/telemetry.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Telemetrija</a>
+  </nav>
+
+  <nav class="tabs" style="margin-bottom:22px">
+    <div class="tab active" data-subtab="scanner">Scanner</div>
+    <div class="tab" data-subtab="ping">Ping</div>
+    <div class="tab" data-subtab="history">Istorija</div>
+    <div class="tab" data-subtab="mqtt">MQTT</div>
+    <div class="tab" data-subtab="smtp">SMTP</div>
+    <div class="tab" data-subtab="webhook">Webhook</div>
+    <div class="tab" data-subtab="omada">Omada</div>
+    <div class="tab" data-subtab="appearance">Izgled</div>
+    <div class="tab" data-subtab="backup">Backup</div>
+    <div class="tab" data-subtab="reset">Reset</div>
+  </nav>
+
+  <div class="panel" id="panel-quiet-hours" style="max-width:640px;margin-top:16px;margin-bottom:16px">
+    <h2>Tiha zona (Quiet Hours)</h2>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:12px">
+      Utiče na SMTP i MQTT obaveštenja — događaji se i dalje evidentiraju, samo se ne šalju eksterna obaveštenja u ovom periodu.
+    </div>
+    <div class="edit-form">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="qh-enabled" /> Tiha zona omogućena</label>
+      </div>
+      <div>
+        <label>Od</label>
+        <input type="text" id="qh-start" placeholder="23:00" />
+      </div>
+      <div>
+        <label>Do</label>
+        <input type="text" id="qh-end" placeholder="07:00" />
+      </div>
+      <div class="full">
+        <label>Vremenska zona (vreme od/do se računa po njoj)</label>
+        <input type="text" id="qh-timezone" placeholder="Europe/Belgrade" list="qh-tz-list" />
+        <datalist id="qh-tz-list">
+          <option value="Europe/Belgrade"></option>
+          <option value="Europe/Zagreb"></option>
+          <option value="Europe/Sarajevo"></option>
+          <option value="Europe/Podgorica"></option>
+          <option value="Europe/Skopje"></option>
+          <option value="Europe/Ljubljana"></option>
+          <option value="Europe/Vienna"></option>
+          <option value="Europe/Berlin"></option>
+          <option value="Europe/London"></option>
+          <option value="UTC"></option>
+        </datalist>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="qh-save-btn">Sačuvaj tihu zonu</button>
+    </div>
+    <div id="qh-result" style="margin-top:10px;font-size:12.5px"></div>
+  </div>
+
+  <div class="settings-row" id="panel-scanner">
+  <div class="panel" style="max-width:640px">
+    <h2>Scanner</h2>
+
+    <div class="edit-form">
+      <div>
+        <label>Scan interval (sekunde)</label>
+        <input type="text" id="sc-interval" placeholder="30" />
+      </div>
+      <div>
+        <label>Offline threshold (uzastopnih promašaja)</label>
+        <input type="text" id="sc-offline-threshold" placeholder="3" />
+      </div>
+      <div>
+        <label>Minimalna odsutnost pre OFFLINE (sekunde)</label>
+        <input type="text" id="sc-offline-grace" placeholder="300" />
+      </div>
+      <div>
+        <label>Interfejs</label>
+        <input type="text" id="sc-interface" placeholder="npr. eth0 (prazno = automatski)" />
+      </div>
+      <div>
+        <label>Probe timeout (sekunde)</label>
+        <input type="text" id="sc-settle" placeholder="1.5" />
+      </div>
+      <div class="full">
+        <label>Mrežni opsezi (po jedan CIDR po liniji, npr. 192.168.1.0/24)</label>
+        <textarea id="sc-ranges" rows="3" style="width:100%;background:var(--bg-elevated);border:1px solid var(--card-border);color:var(--text);border-radius:var(--radius-sm);padding:8px 10px;font-size:12.5px;font-family:monospace"></textarea>
+      </div>
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="sc-resolve-hostnames" /> Razrešavaj hostname (reverse DNS)</label>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--text-faint);margin-top:10px">
+      Napomena: aplikacija koristi ARP/neighbor-table detekciju (ne klasičan ICMP ping), pa "Probe timeout" predstavlja vreme čekanja da se ARP odgovori slegnu, ne ping timeout u klasičnom smislu.
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="sc-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="sc-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li><strong>Scan interval</strong> — koliko često se mreža skenira. 30s je dobar balans; nema potrebe za agresivnim skeniranjem.</li>
+      <li><strong>Offline threshold</strong> — koliko uzastopnih promašaja mora da prođe pre nego što uređaj postane OFFLINE (sprečava lažne alarme).</li>
+      <li><strong>Minimalna odsutnost</strong> — uređaj postaje OFFLINE tek kad su ispunjena <em>oba</em> uslova: dovoljno promašaja i nije viđen bar ovoliko sekundi. Telefoni i IoT uređaji (Tuya, ESP) u štednji energije po minut-dva ne odgovaraju na ARP; 300s (5 min) uklanja većinu lažnih OFFLINE/VRAĆEN parova. Ako je Omada uključena, Wi-Fi uređaj koji je i dalje povezan na AP uvek se računa kao prisutan.</li>
+      <li><strong>Interfejs</strong> — ostavi prazno da aplikacija sama izabere; upiši npr. <code>eth0</code> samo ako imaš više mrežnih kartica.</li>
+      <li><strong>Mrežni opsezi</strong> — jedan CIDR po liniji, npr. <code>192.168.1.0/24</code>. Podržano je više opsega odjednom.</li>
+    </ol>
+    <div class="help-note">Napomena: koristi se ARP/neighbor-table detekcija, ne klasičan ping — zato je "Probe timeout" vreme čekanja da se ARP odgovori slegnu.</div>
+  </div>
+
+  <div class="panel" style="max-width:640px">
+    <h2>Detekcija skeniranja mreže i IP konflikta</h2>
+    <div id="sd-status" class="sd-status"></div>
+
+    <div class="edit-form">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="sd-enabled" /> Detekcija skeniranja mreže (SCAN_DETECTED)</label>
+      </div>
+      <div>
+        <label>Prag: broj različitih adresa</label>
+        <input type="text" id="sd-threshold" placeholder="30" />
+      </div>
+      <div>
+        <label>U vremenskom prozoru (sekunde)</label>
+        <input type="text" id="sd-window" placeholder="60" />
+      </div>
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="sd-conflict" /> Detekcija IP konflikta (IP_CONFLICT)</label>
+      </div>
+      <div>
+        <label>Prozor za IP konflikt (sekunde)</label>
+        <input type="text" id="sd-conflict-window" placeholder="600" />
+      </div>
+      <div>
+        <label>Pauza između upozorenja za isti izvor (sekunde)</label>
+        <input type="text" id="sd-cooldown" placeholder="600" />
+      </div>
+      <div class="full">
+        <label>Poznati skeneri — MAC adrese, jedna po liniji (npr. Watch Your LAN, Home Assistant)</label>
+        <textarea id="sd-ignore" rows="3" class="mono-textarea" placeholder="AA:BB:CC:DD:EE:FF"></textarea>
+        <div class="field-hint">Njihovo <em>uobičajeno</em> skeniranje se ne prijavljuje. Aplikacija 6 sati uči kako se svaki ponaša, a posle toga upozorava ako počne da skenira znatno češće, obuhvati znatno više adresa ili se javi sa nove IP adrese (moguće lažno predstavljanje tuđim MAC-om).</div>
+      </div>
+      <div class="full" id="sd-known-list"></div>
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="sd-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="sd-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako radi detekcija skeniranja</h2>
+    <ol>
+      <li>Poseban servis <code>networkwatcher-sniffer</code> pasivno sluša <strong>samo ARP</strong> saobraćaj (ništa ne šalje i ne gleda drugi saobraćaj). Samo on ima <code>CAP_NET_RAW</code> privilegiju; scanner i web rade bez nje.</li>
+      <li><strong>Skeniranje</strong>: ako jedan uređaj u zadatom prozoru pita za više različitih adresa od praga (npr. <code>nmap -sn</code>, <code>arp-scan</code>, Watch Your LAN, Fing), beleži se <em>SKENIRANJE MREŽE</em> sa izvorom i brojem adresa.</li>
+      <li><strong>IP konflikt</strong>: dve različite MAC adrese u okviru prozora (podrazumevano 10 min) koriste istu IP adresu — vidi se i iz ARP saobraćaja i iz skenera (IP „preskače“ sa jednog uređaja na drugi). DHCP ne dodeljuje adresu koja je još u zakupu, pa je to gotovo uvek ručno (statički) podešena adresa. Konflikt koji traje prijavljuje se ponovo posle pauze, pa ostaje „aktivan“ na dashboardu dok se ne reši.</li>
+      <li><strong>Poznati skeneri</strong>: uređaji koje znaš i kojima je skeniranje posao (Watch Your LAN, Home Assistant, Fing...). Ne prijavljuju se dok rade kao i obično; prijavljuju se samo kad počnu da se ponašaju čudno. Svi ostali — nepoznati, ali i tvoji poznati uređaji koji inače ne skeniraju — prijavljuju se čim pređu prag.</li>
+      <li><strong>Pauza</strong> sprečava da skener koji radi stalno (npr. na svakih par minuta) napravi stotine istih upozorenja.</li>
+      <li>Ograničenje: vidi se samo ARP (host discovery u istom segmentu). Port-scan jednog hosta (SYN scan) zahteva IDS (Suricata/Zeek)</li>
+    </ol>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-ping" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Ping</h2>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div>
+        <label>Ping interval (sekunde)</label>
+        <input type="text" id="pg-interval" placeholder="30" />
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px">Boje za brzinu odziva (RTT)</h3>
+    <div class="edit-form">
+      <div>
+        <label>Do <span id="pg-band-0-label">50</span> ms</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="pg-band-0-max" style="width:80px" />
+          <input type="color" id="pg-band-0-color" style="width:44px;height:36px;padding:2px" />
+        </div>
+      </div>
+      <div>
+        <label>Do <span id="pg-band-1-label">150</span> ms</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="pg-band-1-max" style="width:80px" />
+          <input type="color" id="pg-band-1-color" style="width:44px;height:36px;padding:2px" />
+        </div>
+      </div>
+      <div>
+        <label>Do <span id="pg-band-2-label">300</span> ms</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="pg-band-2-max" style="width:80px" />
+          <input type="color" id="pg-band-2-color" style="width:44px;height:36px;padding:2px" />
+        </div>
+      </div>
+      <div>
+        <label>Preko toga (i nedostupno)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="pg-band-3-color" style="width:44px;height:36px;padding:2px" />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="pg-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="pg-result" style="margin-top:10px;margin-bottom:6px;font-size:12.5px"></div>
+
+    <h3 style="margin-top:20px">Ping destinacije</h3>
+    <div class="edit-form">
+      <div>
+        <label>IP adresa / hostname</label>
+        <input type="text" id="pg-new-address" placeholder="npr. 192.168.1.1 ili google.com" />
+      </div>
+      <div>
+        <label>Naziv (opciono)</label>
+        <input type="text" id="pg-new-label" placeholder="npr. Router" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="pg-add-btn">+ Dodaj destinaciju</button>
+    </div>
+
+    <div id="pg-targets-list" style="margin-top:14px;display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li>Unesi <strong>IP adresu ili hostname</strong> (npr. <code>8.8.8.8</code>, <code>192.168.1.1</code> ili neki sajt) i klikni "+ Dodaj destinaciju" — može ih biti više.</li>
+      <li><strong>Ping interval</strong> određuje koliko često se sve aktivne destinacije pingaju, i koliko često se Ping tab osvežava.</li>
+      <li><strong>Boje za RTT</strong> — podesi granice (u ms) za zeleno/žuto/narandžasto; sve preko poslednje granice, i svaka nedostupna destinacija, prikazuje se poslednjom (crvenom) bojom.</li>
+      <li>Svaku destinaciju možeš privremeno isključiti (checkbox "aktivan") bez brisanja istorije, ili je trajno ukloniti (✕).</li>
+    </ol>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-history" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Istorija</h2>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div>
+        <label>Čuvanje istorije (retencija)</label>
+        <select id="hist-retention-preset">
+          <option value="7">7 dana</option>
+          <option value="30">30 dana</option>
+          <option value="90">90 dana</option>
+          <option value="365">365 dana</option>
+          <option value="custom">Prilagođeno...</option>
+          <option value="unlimited">Neograničeno</option>
+        </select>
+      </div>
+      <div id="hist-custom-days-wrap" style="display:none">
+        <label>Broj dana</label>
+        <input type="text" id="hist-custom-days" placeholder="npr. 45" />
+      </div>
+      <div>
+        <label>Čuvanje ping statistike</label>
+        <select id="hist-ping-preset">
+          <option value="1">1 dan</option>
+          <option value="3">3 dana</option>
+          <option value="7">7 dana</option>
+          <option value="10">10 dana</option>
+          <option value="30">30 dana</option>
+          <option value="90">90 dana</option>
+          <option value="custom">Prilagođeno...</option>
+          <option value="unlimited">Neograničeno</option>
+        </select>
+      </div>
+      <div id="hist-ping-custom-wrap" style="display:none">
+        <label>Broj dana (ping)</label>
+        <input type="text" id="hist-ping-custom-days" placeholder="npr. 14" />
+      </div>
+      <div id="hist-ping-note" class="field-note"></div>
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="hist-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="hist-result" style="margin-top:14px;font-size:12.5px"></div>
+
+    <h3 style="margin-top:20px">Ručno čišćenje</h3>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:10px">
+      Odmah briše događaje, istoriju IP adresa, log obaveštenja i ping statistiku starije od trenutno sačuvanih perioda. Osnovni podaci o uređaju (prvi/poslednji put viđen, broj pojavljivanja) se nikad ne brišu.
+    </div>
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn" id="hist-cleanup-btn">Pokreni čišćenje sada</button>
+    </div>
+    <div id="hist-cleanup-result" style="margin-top:10px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li><strong>Čuvanje istorije</strong> — koliko dugo se čuvaju detaljni događaji, istorija IP adresa i log obaveštenja (koristi ih i Network Time Machine). Osnovni podaci o uređaju (prvi/poslednji put viđen, broj pojavljivanja) čuvaju se trajno, bez obzira na ovo podešavanje.</li>
+      <li><strong>Čuvanje ping statistike</strong> — koliko dugo se čuvaju pojedinačna ping merenja (grafikoni na Ping tabu). Pošto se meri na svakih par sekundi, ova tabela raste mnogo brže od istorije uređaja. Ping tab prikazuje najviše 10 dana, pa je 10 dana preporučena vrednost.</li>
+      <li><strong>Neograničeno</strong> — ništa se automatski ne briše.</li>
+      <li>Čišćenje se automatski pokreće jednom na sat u pozadini (<code>networkwatcher-worker</code> servis); dugme "Pokreni čišćenje sada" ga pokreće odmah, korisno za trenutnu proveru.</li>
+    </ol>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-mqtt" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>MQTT / Home Assistant</h2>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="mqtt-enabled" /> MQTT omogućen</label>
+      </div>
+    </div>
+
+    <div class="edit-form" style="margin-top:14px">
+      <div>
+        <label>Broker host</label>
+        <input type="text" id="mqtt-host" placeholder="npr. 192.168.1.10" />
+      </div>
+      <div>
+        <label>Port</label>
+        <input type="text" id="mqtt-port" placeholder="1883" />
+      </div>
+      <div>
+        <label>Username</label>
+        <input type="text" id="mqtt-username" placeholder="opciono" />
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="text" id="mqtt-password" placeholder="ostavi prazno da zadržiš postojeću" />
+      </div>
+      <div>
+        <label>Client ID</label>
+        <input type="text" id="mqtt-client-id" placeholder="networkwatcher" />
+      </div>
+      <div>
+        <label>Base topic</label>
+        <input type="text" id="mqtt-base-topic" placeholder="networkwatcher" />
+      </div>
+      <div>
+        <label>QoS</label>
+        <select id="mqtt-qos">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:16px">
+        <label class="checkbox"><input type="checkbox" id="mqtt-tls" /> TLS</label>
+        <label class="checkbox"><input type="checkbox" id="mqtt-retain" /> Retain</label>
+      </div>
+    </div>
+
+    <div id="mqtt-password-note" style="font-size:11px;color:var(--text-faint);margin-top:6px"></div>
+
+    <h3 style="margin-top:20px">Home Assistant Discovery</h3>
+    <div class="edit-form">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="ha-enabled" /> Automatski kreiraj senzore u Home Assistant-u (MQTT Discovery)</label>
+      </div>
+      <div>
+        <label>Discovery prefix</label>
+        <input type="text" id="ha-prefix" placeholder="homeassistant" />
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text-faint);margin-top:6px">
+      Objavljuje: sensor.network_devices_total/online/wifi/lan, sensor.network_last_new_device, binary_sensor.network_new_device.
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="mqtt-test-btn">Test MQTT</button>
+      <button class="btn btn-primary" id="mqtt-save-btn">Sačuvaj podešavanja</button>
+    </div>
+
+    <div id="mqtt-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li><strong>Broker host/port</strong> — adresa tvog MQTT brokera (npr. Mosquitto add-on u Home Assistant-u je obično na istoj IP adresi kao HA, port <code>1883</code>).</li>
+      <li><strong>Username/Password</strong> — ostavi prazno ako broker dozvoljava anonimne konekcije.</li>
+      <li>Klikni <strong>"Test MQTT"</strong> da odmah proveriš konekciju pre čuvanja.</li>
+      <li>Uključi <strong>Home Assistant Discovery</strong> da senzori (ukupno/online/Wi-Fi/LAN uređaja) automatski budu prepoznati u Home Assistant-u, bez ručnog dodavanja.</li>
+    </ol>
+    <div class="help-note">Topic struktura: <code>networkwatcher/device/{mac}/status</code>, <code>.../events/new_device</code> itd..</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-smtp" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>SMTP</h2>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="smtp-enabled" /> SMTP omogućen</label>
+      </div>
+    </div>
+
+    <div class="edit-form" style="margin-top:14px">
+      <div>
+        <label>SMTP server</label>
+        <input type="text" id="smtp-host" placeholder="npr. smtp.gmail.com" />
+      </div>
+      <div>
+        <label>Port</label>
+        <input type="text" id="smtp-port" placeholder="587" />
+      </div>
+      <div>
+        <label>Username</label>
+        <input type="text" id="smtp-username" placeholder="opciono" />
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="text" id="smtp-password" placeholder="ostavi prazno da zadržiš postojeću" />
+      </div>
+      <div>
+        <label>Sigurnost</label>
+        <select id="smtp-security">
+          <option value="NONE">Ništa</option>
+          <option value="STARTTLS">STARTTLS</option>
+          <option value="SSL_TLS">SSL/TLS</option>
+        </select>
+      </div>
+      <div>
+        <label>From adresa</label>
+        <input type="text" id="smtp-from" placeholder="networkwatcher@example.com" />
+      </div>
+      <div class="full">
+        <label>Primaoci (odvojeni zarezom)</label>
+        <input type="text" id="smtp-recipients" placeholder="ja@example.com, drugi@example.com" />
+      </div>
+      <div class="full">
+        <label>Subject prefix</label>
+        <input type="text" id="smtp-subject-prefix" placeholder="[Network Watcher]" />
+      </div>
+    </div>
+
+    <div id="smtp-password-note" style="font-size:11px;color:var(--text-faint);margin-top:6px"></div>
+
+    <div class="modal-actions">
+      <button class="btn" id="smtp-test-btn">Send Test Email</button>
+      <button class="btn btn-primary" id="smtp-save-btn">Sačuvaj podešavanja</button>
+    </div>
+
+    <div id="smtp-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Primer — Gmail</h2>
+    <ol>
+      <li>SMTP server: <code>smtp.gmail.com</code>, Port: <code>587</code>, Sigurnost: <strong>STARTTLS</strong>.</li>
+      <li>Username: tvoja puna Gmail adresa (npr. <code>ime@gmail.com</code>).</li>
+      <li>Password: <strong>ne</strong> tvoja obična Gmail lozinka — Google to blokira. Mora se koristiti <strong>App Password</strong>.</li>
+      <li>Da napraviš App Password: uključi 2-Step Verification na Google nalogu, pa idi na <code>myaccount.google.com → Security → App passwords</code>, generiši lozinku za "Mail" i nju upiši u Password polje ovde.</li>
+      <li>From adresa: ista Gmail adresa. Primaoci: tvoj mejl (ili više njih, odvojenih zarezom).</li>
+    </ol>
+    <div class="help-note">Klikni "Send Test Email" da odmah proveriš da li stiže mejl, pre nego što se osloniš na obaveštenja.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-webhook" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Webhook</h2>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:12px">
+      Generički HTTP POST na svaki NEW_DEVICE / DEVICE_OFFLINE / DEVICE_RETURNED događaj (JSON payload)
+    </div>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="wh-enabled" /> Webhook omogućen</label>
+      </div>
+    </div>
+
+    <div class="edit-form" style="margin-top:14px">
+      <div class="full">
+        <label>Webhook URL</label>
+        <input type="text" id="wh-url" placeholder="https://primer.com/hook" />
+      </div>
+      <div class="full">
+        <label>Custom header-i (jedan po liniji, format: Naziv: vrednost)</label>
+        <textarea id="wh-headers" rows="3" style="width:100%;background:var(--bg-elevated);border:1px solid var(--card-border);color:var(--text);border-radius:var(--radius-sm);padding:8px 10px;font-size:12.5px;font-family:monospace" placeholder="Authorization: Bearer xyz"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="wh-test-btn">Test Webhook</button>
+      <button class="btn btn-primary" id="wh-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="wh-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li>Unesi URL koji prima POST zahteve sa JSON telom, npr. Discord webhook, n8n/Zapier webhook trigger, ili sopstveni endpoint.</li>
+      <li>Payload sadrži: <code>event</code> (npr. NEW_DEVICE), <code>mac</code>, <code>ip</code>.</li>
+      <li>Custom header-i su opcioni — po jedan po liniji, format <code>Naziv: vrednost</code> (npr. <code>Authorization: Bearer xyz</code>).</li>
+      <li>Klikni <strong>"Test Webhook"</strong> da pošalješ probni POST i odmah vidiš da li endpoint prima podatke.</li>
+    </ol>
+    <div class="help-note">Isti skup događaja kao MQTT/SMTP, poštuje tihu zonu i trusted status uređaja.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-omada" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>TP-Link Omada kontroler</h2>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:12px">
+      Povezuje se na Omada Open API i obogaćuje uređaje sa stvarnim Wi-Fi podacima (SSID, RSSI, pristupna tačka) Bez ovoga svi uređaji se vide kao LAN, jer skener vidi samo Ethernet interfejs kontejnera.
+    </div>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="omada-enabled" /> Omada integracija omogućena</label>
+      </div>
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="omada-verify-ssl" /> Proveri SSL sertifikat (isključi za self-signed)</label>
+      </div>
+    </div>
+
+    <div class="edit-form" style="margin-top:14px">
+      <div class="full">
+        <label>Controller URL</label>
+        <input type="text" id="omada-url" placeholder="https://192.168.1.10:8043" />
+      </div>
+      <div>
+        <label>Omada ID</label>
+        <input type="text" id="omada-omadac-id" placeholder="sa Settings → Platform Integration → Open API" />
+      </div>
+      <div>
+        <label>Client ID</label>
+        <input type="text" id="omada-client-id" placeholder="Client ID aplikacije" />
+      </div>
+      <div class="full">
+        <label>Client Secret</label>
+        <input type="text" id="omada-client-secret" placeholder="ostavi prazno da zadržiš postojeći" />
+      </div>
+      <div class="full">
+        <label>Lokacija (site)</label>
+        <select id="omada-site"></select>
+      </div>
+    </div>
+    <div id="omada-secret-hint" style="font-size:11px;color:var(--text-faint);margin-top:2px"></div>
+
+    <div class="modal-actions">
+      <button class="btn" id="omada-test-btn">Testiraj konekciju</button>
+      <button class="btn" id="omada-sites-btn">Učitaj lokacije</button>
+      <button class="btn btn-primary" id="omada-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="omada-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li>U Omada kontroleru: <code>Settings → Platform Integration → Open API → Add New App</code>.</li>
+      <li>Mode: <strong>Client</strong> (NE Authorization Code — taj mod zahteva prijavu kroz browser i ne radi za pozadinski servis).</li>
+      <li>Role: <strong>Viewer</strong> (dovoljno za čitanje liste klijenata).</li>
+      <li>Izaberi <strong>Site</strong> kojoj aplikacija sme da pristupa, pa klikni <strong>Create</strong>.</li>
+      <li>Otvori kreiranu aplikaciju (View) — tu piše <strong>Omada ID</strong>, kao i <strong>Client ID</strong>/<strong>Client Secret</strong> (Secret se u punom obliku vidi samo odmah nakon kreiranja — kopiraj ga smesta).</li>
+      <li>Unesi sve to ovde, sačuvaj podešavanja, pa klikni <strong>"Učitaj lokacije"</strong> i <strong>izaberi lokaciju iz padajućeg menija</strong> — bez toga sinhronizacija neće raditi iako je konekcija uspešna.</li>
+      <li>Sačuvaj ponovo (da bi se izabrana lokacija upisala), pa klikni "Testiraj konekciju".</li>
+    </ol>
+    <div class="help-note">Bez ovoga svi uređaji se vide kao LAN — scanner sam vidi samo Ethernet interfejs kontejnera, ne i stvarnu Wi-Fi vezu.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-appearance" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Izgled</h2>
+
+    <div class="edit-form">
+      <div class="full">
+        <label>Tema</label>
+        <select id="ap-theme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="blue">Blue</option>
+          <option value="green">Green</option>
+          <option value="purple">Purple</option>
+          <option value="high_contrast">High Contrast</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="ap-custom-colors" style="display:none">
+      <h3 style="margin-top:16px">Custom boje</h3>
+      <div class="edit-form">
+        <div>
+          <label>Primarna boja</label>
+          <input type="color" id="ap-primary" style="width:100%;height:36px;padding:2px" />
+        </div>
+        <div>
+          <label>Sekundarna boja</label>
+          <input type="color" id="ap-secondary" style="width:100%;height:36px;padding:2px" />
+        </div>
+        <div>
+          <label>Boja teksta</label>
+          <input type="color" id="ap-text" style="width:100%;height:36px;padding:2px" />
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:16px">Kartice</h3>
+    <div class="edit-form">
+      <div>
+        <label>Stil kartice</label>
+        <select id="ap-card-style">
+          <option value="solid">Solid</option>
+          <option value="transparent">Transparent</option>
+          <option value="glass">Glass</option>
+        </select>
+      </div>
+      <div>
+        <label>Border radius (px)</label>
+        <input type="text" id="ap-radius" placeholder="14" />
+      </div>
+      <div>
+        <label>Card opacity (%): <span id="ap-opacity-value">4</span>%</label>
+        <input type="range" id="ap-opacity" min="0" max="100" style="width:100%" />
+      </div>
+      <div>
+        <label>Card blur (px, samo Glass): <span id="ap-blur-value">12</span>px</label>
+        <input type="range" id="ap-blur" min="0" max="30" style="width:100%" />
+      </div>
+    </div>
+
+    <h3 style="margin-top:16px">Pozadinska slika</h3>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:10px">JPG, JPEG, PNG ili WEBP, maksimum 8MB.</div>
+
+    <div id="ap-bg-preview-wrap" style="display:none;margin-bottom:12px">
+      <img id="ap-bg-preview" style="max-width:100%;max-height:140px;border-radius:var(--radius-sm);border:1px solid var(--card-border);display:block" />
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <input type="file" id="ap-bg-file" accept="image/jpeg,image/png,image/webp" />
+      <button class="btn" id="ap-bg-upload-btn">Upload</button>
+      <button class="btn btn-danger" id="ap-bg-remove-btn" style="display:none">Ukloni</button>
+    </div>
+
+    <div class="edit-form">
+      <div class="full">
+        <label class="checkbox"><input type="checkbox" id="ap-bg-enabled" /> Pozadinska slika omogućena</label>
+      </div>
+      <div>
+        <label>Opacity (%): <span id="ap-bg-opacity-value">35</span>%</label>
+        <input type="range" id="ap-bg-opacity" min="0" max="100" style="width:100%" />
+      </div>
+      <div>
+        <label>Blur (px): <span id="ap-bg-blur-value">4</span>px</label>
+        <input type="range" id="ap-bg-blur" min="0" max="30" style="width:100%" />
+      </div>
+      <div>
+        <label>Brightness (%): <span id="ap-bg-brightness-value">90</span>%</label>
+        <input type="range" id="ap-bg-brightness" min="0" max="200" style="width:100%" />
+      </div>
+      <div>
+        <label>Saturation (%): <span id="ap-bg-saturation-value">100</span>%</label>
+        <input type="range" id="ap-bg-saturation" min="0" max="200" style="width:100%" />
+      </div>
+      <div class="full">
+        <label>Overlay opacity (%): <span id="ap-bg-overlay-value">25</span>%</label>
+        <input type="range" id="ap-bg-overlay" min="0" max="100" style="width:100%" />
+      </div>
+      <div>
+        <label>Position</label>
+        <select id="ap-bg-position">
+          <option value="center">Center</option>
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="text" id="ap-bg-position-custom" placeholder="npr. 20% 80%" style="width:100%;margin-top:6px;display:none" />
+      </div>
+      <div>
+        <label>Size</label>
+        <select id="ap-bg-size">
+          <option value="cover">Cover</option>
+          <option value="contain">Contain</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="text" id="ap-bg-size-custom" placeholder="npr. 150% 150%" style="width:100%;margin-top:6px;display:none" />
+      </div>
+      <div>
+        <label>Repeat</label>
+        <select id="ap-bg-repeat">
+          <option value="no-repeat">None</option>
+          <option value="repeat">Repeat</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="ap-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="ap-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li>Izaberi gotovu <strong>temu</strong> ili <strong>Custom</strong> za ručni izbor boja.</li>
+      <li><strong>Kartice</strong> — "Glass" stil koristi providnost + blur (staklen izgled); "Solid" je klasičan neproziran izgled.</li>
+      <li><strong>Pozadinska slika</strong> — otpremi sliku, pa podesi providnost/blur/osvetljenje da tekst ostane čitljiv preko nje.</li>
+    </ol>
+    <div class="help-note">Promene se odmah vide uživo dok podešavaš, pre čuvanja — ako odeš na drugi tab bez čuvanja, vraća se na sačuvano stanje.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-backup" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Backup / Restore</h2>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:16px">
+      Izvoz/uvoz podešavanja aplikacije (SMTP/MQTT/Scanner/Webhook). Lozinke ostaju šifrovane u fajlu.
+    </div>
+
+    <div class="modal-actions">
+      <a class="btn" href="/api/settings/backup/export" id="bk-export-btn">Export configuration</a>
+      <span></span>
+    </div>
+
+    <div style="margin-top:18px">
+      <label style="display:block;font-size:11px;color:var(--text-faint);margin-bottom:6px">Import configuration</label>
+      <input type="file" id="bk-import-file" accept="application/json" />
+      <button class="btn" id="bk-import-btn" style="margin-left:8px">Uvezi</button>
+    </div>
+
+    <div id="bk-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako podesiti</h2>
+    <ol>
+      <li><strong>Export</strong> preuzima sva podešavanja (SMTP/MQTT/Scanner/Webhook/Omada/Izgled) kao JSON fajl. Lozinke/Secret-i ostaju šifrovani u fajlu.</li>
+      <li><strong>Import</strong> učitava taj isti fajl nazad — koristi za brzo prenošenje podešavanja na drugi kontejner.</li>
+    </ol>
+    <div class="help-note">Backup ne uključuje listu uređaja/istoriju — samo podešavanja aplikacije.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-reset" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2 style="color:var(--bad)">Reset baze uređaja</h2>
+    <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">
+      Trajno briše <strong>sve uređaje</strong> i njihovu istoriju (događaje, IP istoriju) iz baze.
+      Koristi ovo npr. kada premeštaš kontejner na drugu mrežu/Proxmox — posle reseta, sledeće
+      skeniranje popunjava bazu potpuno novim uređajima. Podešavanja (MQTT/SMTP/Scanner/Webhook/Appearance)
+      <strong>ostaju netaknuta</strong>.
+    </div>
+    <div style="font-size:12.5px;color:var(--bad);font-weight:600;margin-bottom:16px">
+      Ova akcija se ne može poništiti.
+    </div>
+
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div class="full">
+        <label>Upiši <strong>RESET</strong> da potvrdiš</label>
+        <input type="text" id="reset-confirm-input" placeholder="RESET" style="width:100%" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-danger" id="reset-devices-btn" disabled>Obriši sve uređaje</button>
+    </div>
+    <div id="reset-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="panel help-card">
+    <h2>Kako se koristi</h2>
+    <ol>
+      <li>Koristi kad seliš kontejner na drugu mrežu/Proxmox, ili želiš da počneš skeniranje iz čista.</li>
+      <li>Upiši tačno <code>RESET</code> u polje da se dugme aktivira — sprečava slučajni klik.</li>
+      <li>Briše uređaje i istoriju; podešavanja (SMTP/MQTT/Scanner/Omada/Izgled) ostaju netaknuta.</li>
+    </ol>
+    <div class="help-note">Akcija se ne može poništiti — razmisli pre potvrde.</div>
+  </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/ws-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/settings.js"></script>
+</body>
+</html>

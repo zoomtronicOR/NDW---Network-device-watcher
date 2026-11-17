@@ -1,0 +1,31 @@
+from enum import Enum
+
+
+class ConnectionType(str, Enum):
+    LAN = "LAN"
+    WIFI = "WIFI"
+
+
+class EventType(str, Enum):
+    NEW_DEVICE = "NEW_DEVICE"
+    DEVICE_ONLINE = "DEVICE_ONLINE"
+    DEVICE_OFFLINE = "DEVICE_OFFLINE"
+    DEVICE_RETURNED = "DEVICE_RETURNED"
+    IP_CHANGED = "IP_CHANGED"
+    HOSTNAME_CHANGED = "HOSTNAME_CHANGED"
+    MANUAL_UPDATE = "MANUAL_UPDATE"
+    ANOMALY_BURST_NEW_DEVICES = "ANOMALY_BURST_NEW_DEVICES"
+    VENDOR_MISMATCH = "VENDOR_MISMATCH"
+    IP_CONFLICT = "IP_CONFLICT"
+    SCAN_DETECTED = "SCAN_DETECTED"
+
+
+class NotificationType(str, Enum):
+    SMTP = "SMTP"
+    MQTT = "MQTT"
+    WEBHOOK = "WEBHOOK"
+
+
+class NotificationStatus(str, Enum):
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"

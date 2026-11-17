@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network Device Watcher &middot; System</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-title">
+      <span class="dot"></span>
+      <div>
+        <h1>Network Device Watcher</h1>
+        <p>System &middot; Logovi</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>Dashboard</a>
+    <a class="tab" href="/devices.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>Uređaji</a>
+    <a class="tab" href="/ping.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>Ping</a>
+    <a class="tab" href="/events.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Istorija</a>
+    <a class="tab" href="/timemachine.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Network Time Machine</a>
+    <a class="tab" href="/settings.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Podešavanja</a>
+    <a class="tab active" href="/logs.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Sistem</a>
+    <a class="tab" href="/telemetry.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Telemetrija</a>
+  </nav>
+
+  <div class="view-toggle" id="system-view-toggle">
+    <button type="button" class="view-toggle-btn" data-view="logs">Sistemski log</button>
+    <button type="button" class="view-toggle-btn" data-view="notif">Poslata obaveštenja</button>
+  </div>
+
+  <div id="view-logs">
+  <div class="toolbar">
+    <input type="text" id="search-input" class="search-input" placeholder="Pretraga poruke..." />
+
+    <select id="level-filter">
+      <option value="">Svi nivoi</option>
+      <option value="DEBUG">DEBUG</option>
+      <option value="INFO">INFO</option>
+      <option value="WARNING">WARNING</option>
+      <option value="ERROR">ERROR</option>
+    </select>
+
+    <select id="source-filter">
+      <option value="all">Svi servisi</option>
+      <option value="web">Web</option>
+      <option value="scanner">Scanner</option>
+      <option value="pinger">Pinger</option>
+      <option value="worker">Worker</option>
+      <option value="sniffer">Sniffer (ARP)</option>
+    </select>
+
+    <label class="checkbox">Od <input type="datetime-local" id="start-filter" /></label>
+
+    <button type="button" class="btn btn-ghost btn-reset" id="reset-filters-btn" title="Vrati pretragu, filtere i sortiranje na početno">&#8634; Resetuj filtere</button>
+
+    <div class="spacer"></div>
+
+    <select id="page-size">
+      <option value="50">50 / str.</option>
+      <option value="100" selected>100 / str.</option>
+      <option value="200">200 / str.</option>
+    </select>
+
+    <a class="btn" id="download-btn" href="#">Download</a>
+  </div>
+
+  <div class="table-wrap">
+    <table class="device-table">
+      <thead>
+        <tr>
+          <th style="width:170px" data-sort="timestamp" data-default-order="desc">Vreme</th>
+          <th style="width:90px" data-sort="level" data-default-order="desc">Nivo</th>
+          <th style="width:80px" data-sort="source">Izvor</th>
+          <th data-sort="message">Poruka</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr><td colspan="4" style="text-align:center;color:var(--text-faint);padding:24px">Učitavanje...</td></tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button class="btn btn-ghost" id="prev-page">&larr; Prethodna</button>
+      <span id="page-info">Strana 1</span>
+      <button class="btn btn-ghost" id="next-page">Sledeća &rarr;</button>
+    </div>
+  </div>
+  </div>
+
+  <div id="view-notif" hidden>
+    <div class="notif-summary" id="notif-summary"></div>
+    <div class="toolbar">
+      <input type="text" id="nf-search" class="search-input" placeholder="Pretraga: uređaj, MAC, odredište, greška..." />
+      <select id="nf-channel">
+        <option value="">Svi kanali</option>
+        <option value="MQTT">MQTT</option>
+        <option value="WEBHOOK">Webhook</option>
+        <option value="SMTP">E-mail (SMTP)</option>
+      </select>
+      <select id="nf-status">
+        <option value="">Svi statusi</option>
+        <option value="SUCCESS">Poslato</option>
+        <option value="FAILED">Neuspešno</option>
+        <option value="SKIPPED">Preskočeno</option>
+      </select>
+      <select id="nf-type"></select>
+      <button type="button" class="btn btn-ghost btn-reset" id="nf-reset-btn" title="Vrati pretragu, filtere i sortiranje na početno">&#8634; Resetuj filtere</button>
+      <div class="spacer"></div>
+      <select id="nf-page-size">
+        <option value="25">25 / str.</option>
+        <option value="50" selected>50 / str.</option>
+        <option value="100">100 / str.</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="device-table">
+        <thead>
+          <tr id="nf-head-row">
+            <th style="width:170px" data-sort="timestamp" data-default-order="desc">Vreme</th>
+            <th data-sort="channel">Kanal</th>
+            <th data-sort="event_type">Događaj</th>
+            <th data-sort="device">Uređaj</th>
+            <th data-sort="destination">Odredište</th>
+            <th data-sort="status">Status</th>
+            <th data-sort="error">Razlog / greška</th>
+          </tr>
+        </thead>
+        <tbody id="nf-body">
+          <tr><td colspan="7" style="text-align:center;color:var(--text-faint);padding:24px">Učitavanje...</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button class="btn btn-ghost" id="nf-prev">&larr; Prethodna</button>
+        <span id="nf-page-info">Strana 1</span>
+        <button class="btn btn-ghost" id="nf-next">Sledeća &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">Network Device Watcher &middot; logovi svih networkwatcher servisa i evidencija poslatih obaveštenja</footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/ws-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/logs.js"></script>
+  <script src="/js/notifications.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+[Unit]
+Description=Network Device Watcher - Pinger
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=networkwatcher
+WorkingDirectory=/opt/networkwatcher
+EnvironmentFile=/opt/networkwatcher/.env
+ExecStart=/opt/networkwatcher/venv/bin/python -m app.pinger_main
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

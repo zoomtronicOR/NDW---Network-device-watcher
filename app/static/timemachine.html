@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network Device Watcher &middot; Time Machine</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-title">
+      <span class="dot"></span>
+      <div>
+        <h1>Network Device Watcher</h1>
+        <p>Network Time Machine</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>Dashboard</a>
+    <a class="tab" href="/devices.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>Uređaji</a>
+    <a class="tab" href="/ping.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>Ping</a>
+    <a class="tab" href="/events.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Istorija</a>
+    <a class="tab active" href="/timemachine.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Network Time Machine</a>
+    <a class="tab" href="/settings.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Podešavanja</a>
+    <a class="tab" href="/logs.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Sistem</a>
+    <a class="tab" href="/telemetry.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Telemetrija</a>
+  </nav>
+
+  <div class="panel" style="margin-bottom:16px">
+    <h2>Prikaži mrežu u trenutku</h2>
+    <div class="toolbar" style="margin-bottom:0">
+      <input type="datetime-local" id="tm-datetime" step="1" />
+      <button class="btn" id="tm-preset-now">Sada</button>
+      <button class="btn" id="tm-preset-1h">-1h</button>
+      <button class="btn" id="tm-preset-24h">-24h</button>
+      <button class="btn" id="tm-preset-7d">-7d</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="tm-go">Prikaži</button>
+    </div>
+    <div id="tm-bounds-note" style="font-size:11px;color:var(--text-faint);margin-top:10px"></div>
+  </div>
+
+  <div id="tm-results" style="display:none">
+    <section class="stat-grid">
+      <div class="stat-card accent-ok">
+        <div class="stat-label">Online u tom trenutku</div>
+        <div class="stat-value" id="tm-online">-</div>
+      </div>
+      <div class="stat-card accent-bad">
+        <div class="stat-label">Offline u tom trenutku</div>
+        <div class="stat-value" id="tm-offline">-</div>
+      </div>
+      <div class="stat-card accent-primary">
+        <div class="stat-label">Pojavilo se od tada</div>
+        <div class="stat-value" id="tm-appeared">-</div>
+      </div>
+      <div class="stat-card accent-warn">
+        <div class="stat-label">Nestalo od tada</div>
+        <div class="stat-value" id="tm-disappeared">-</div>
+      </div>
+    </section>
+
+    <section class="panel-grid" id="tm-diff-panels" style="display:none">
+      <div class="panel">
+        <h2>Pojavilo se od tada (sada online, tada nije)</h2>
+        <div class="events-feed" id="tm-appeared-list"></div>
+      </div>
+      <div class="panel">
+        <h2>Nestalo od tada (tada online, sada nije)</h2>
+        <div class="events-feed" id="tm-disappeared-list"></div>
+      </div>
+    </section>
+
+    <div class="panel" style="margin-top:16px">
+      <h2>Uređaji u tom trenutku</h2>
+      <div style="font-size:11px;color:var(--text-faint);margin-bottom:12px">
+        Otvoreni portovi i Wi-Fi signal trenutno nisu dostupni (aplikacija ih još ne prikuplja).
+      </div>
+      <div class="table-wrap" style="border:none">
+        <table class="device-table">
+          <thead>
+            <tr id="tm-head-row">
+              <th data-sort="online">Status</th>
+              <th data-sort="mac_address">MAC</th>
+              <th data-sort="ip_address">IP</th>
+              <th data-sort="hostname">Hostname</th>
+              <th data-sort="vendor">Vendor</th>
+              <th data-sort="custom_name">Naziv</th>
+              <th data-sort="status_changed_at" data-default-order="desc">Promena statusa</th>
+            </tr>
+          </thead>
+          <tbody id="tm-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tm-empty" class="panel" style="text-align:center;color:var(--text-faint);padding:40px">
+    Izaberi datum i vreme, pa klikni "Prikaži".
+  </div>
+
+  <footer class="app-footer">Network Device Watcher &middot; rekonstrukcija iz istorije događaja, bez posebne snapshot tabele</footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/ws-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/timemachine.js"></script>
+</body>
+</html>

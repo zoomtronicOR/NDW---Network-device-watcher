@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network Device Watcher &middot; Telemetrija</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-title">
+      <span class="dot"></span>
+      <div>
+        <h1>Network Device Watcher</h1>
+        <p>Telemetrija sistema</p>
+      </div>
+    </div>
+    <div class="header-meta" id="tel-updated">Učitavanje...</div>
+  </header>
+
+  <nav class="tabs">
+    <a class="tab" href="/"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>Dashboard</a>
+    <a class="tab" href="/devices.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>Uređaji</a>
+    <a class="tab" href="/ping.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>Ping</a>
+    <a class="tab" href="/events.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Istorija</a>
+    <a class="tab" href="/timemachine.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>Network Time Machine</a>
+    <a class="tab" href="/settings.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Podešavanja</a>
+    <a class="tab" href="/logs.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>Sistem</a>
+    <a class="tab active" href="/telemetry.html"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Telemetrija</a>
+  </nav>
+
+  <section class="stat-grid">
+    <div class="stat-card accent-primary">
+      <div class="stat-label">CPU</div>
+      <div class="stat-value" id="stat-cpu">-</div>
+    </div>
+    <div class="stat-card accent-primary">
+      <div class="stat-label">RAM</div>
+      <div class="stat-value" id="stat-ram">-</div>
+    </div>
+    <div class="stat-card accent-primary">
+      <div class="stat-label">Disk</div>
+      <div class="stat-value" id="stat-disk">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Swap</div>
+      <div class="stat-value" id="stat-swap">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Load average (1m)</div>
+      <div class="stat-value" id="stat-load">-</div>
+    </div>
+    <div class="stat-card accent-ok">
+      <div class="stat-label">Uptime servera</div>
+      <div class="stat-value" id="stat-uptime">-</div>
+    </div>
+  </section>
+
+  <section class="panel-grid thirds">
+    <div class="panel">
+      <h2>Procesor</h2>
+      <div id="tel-cpu-gauge"></div>
+      <div class="tel-cores" id="tel-cores"></div>
+      <div class="tel-kv" id="tel-cpu-kv"></div>
+    </div>
+    <div class="panel">
+      <h2>Memorija</h2>
+      <div id="tel-ram-gauge"></div>
+      <div class="tel-kv" id="tel-ram-kv"></div>
+      <h3>Swap</h3>
+      <div id="tel-swap-gauge"></div>
+    </div>
+    <div class="panel">
+      <h2>Disk</h2>
+      <div id="tel-disk-gauge"></div>
+      <div class="tel-kv" id="tel-disk-kv"></div>
+    </div>
+  </section>
+
+  <section class="panel-grid thirds">
+    <div class="panel">
+      <h2>Mreža (od boot-a)</h2>
+      <div class="tel-kv" id="tel-network-kv"></div>
+    </div>
+    <div class="panel">
+      <h2>Proces aplikacije</h2>
+      <div class="tel-kv" id="tel-process-kv"></div>
+    </div>
+    <div class="panel">
+      <h2>Sistem</h2>
+      <div class="tel-kv" id="tel-system-kv"></div>
+    </div>
+  </section>
+
+  <footer class="app-footer">Network Device Watcher &middot; automatsko osvežavanje na 5s</footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/ws-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/telemetry.js"></script>
+</body>
+</html>

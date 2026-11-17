@@ -1,0 +1,16 @@
+[Unit]
+Description=Network Device Watcher - Web API
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=networkwatcher
+WorkingDirectory=/opt/networkwatcher
+EnvironmentFile=/opt/networkwatcher/.env
+ExecStart=/opt/networkwatcher/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

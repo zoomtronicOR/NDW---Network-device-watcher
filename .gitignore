@@ -1,0 +1,26 @@
+# --- secrets / local configuration ---
+.env
+*.env.local
+
+# --- runtime data ---
+uploads/backgrounds/*
+!uploads/backgrounds/.gitkeep
+data/
+exports/
+logs/
+*.log
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# --- editors / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

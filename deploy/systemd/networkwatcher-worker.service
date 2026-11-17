@@ -1,0 +1,16 @@
+[Unit]
+Description=Network Device Watcher - Worker (history retention cleanup)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=networkwatcher
+WorkingDirectory=/opt/networkwatcher
+EnvironmentFile=/opt/networkwatcher/.env
+ExecStart=/opt/networkwatcher/venv/bin/python -m app.worker_main
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

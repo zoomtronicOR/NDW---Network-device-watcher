@@ -1,0 +1,22 @@
+[Unit]
+Description=Network Device Watcher - ARP sniffer (scan / IP conflict detection)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=networkwatcher
+WorkingDirectory=/opt/networkwatcher
+EnvironmentFile=/opt/networkwatcher/.env
+ExecStart=/opt/networkwatcher/venv/bin/python -m app.sniffer_main
+Restart=on-failure
+RestartSec=5
+
+# Least privilege (§38): this unit alone may open a raw
+# AF_PACKET socket (read-only ARP listener); it can't gain anything else.
+AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
