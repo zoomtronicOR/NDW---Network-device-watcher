@@ -34,6 +34,7 @@ from app.services.arp_monitor import (
     parse_arp_frame,
 )
 from app.services.broadcast_client import broadcast_anomaly
+from app.services.device_identity import same_physical_device
 from app.services.mqtt_client import MqttPublisher
 from app.services.settings_store import get_setting, set_setting
 from app.services.webhook_client import publish_event as webhook_publish_event
@@ -182,6 +183,12 @@ def _emit_conflict(db, alert: ConflictAlert, devices: dict[str, Device], cooldow
     known = [devices[m] for m in alert.macs if m in devices]
     if not known:
         return False
+    if len(known) == len(alert.macs) and same_physical_device(known):
+        # e.g. a phone switching SSIDs between its private and real MAC: the
+        # DHCP server keys the lease on client-id/hostname, so both MACs got
+        # the same IP. One device, not a conflict.
+        logger.info("IP %s shared by %s -- same device (same DHCP hostname), not a conflict", alert.ip, ", ".join(alert.macs))
+        return True
     # Same per-IP cooldown as the scanner-side detector, so one conflict seen
     # by both sources is reported once.
     since = datetime.now(timezone.utc) - timedelta(seconds=cooldown_seconds)

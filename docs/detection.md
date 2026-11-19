@@ -69,7 +69,9 @@ Two devices using the same IP is detected from two sides:
 - **ARP listener:** hosts announce their own IP in every ARP request they broadcast. Two different MACs announcing the same IP within `conflict_window_seconds` (default 10 min) → `IP_CONFLICT`. The window is long because hosts refresh known neighbors with unicast ARP, which the listener cannot see; broadcasts from the two hosts may be minutes apart.
 - **Scanner:** the neighbor table holds only one MAC per IP, so a conflict shows up as the IP *flipping* between two MACs across scans: device A was seen with IP X within the last 10 minutes and has not moved to another IP, and now device B answers for X.
 
-DHCP never hands out an address whose lease is still active, so this is practically always a real problem — usually a statically configured address colliding with a DHCP lease. An event is recorded for both devices. While the conflict lasts it is re-reported every 10 minutes (shared cooldown per IP for both sources), so the dashboard's *Aktivni IP konflikti* card (conflicts in the last 15 minutes) stays lit until it is resolved.
+**One device, several MACs.** Phones often use a randomized ("private") MAC on one SSID and their real MAC on another; the DHCP server identifies the client by its client-id/hostname and may give both MACs the same IP. MAC addresses that report the **same DHCP hostname** are therefore treated as one device and never reported as a conflict.
+
+Otherwise, DHCP never hands out an address whose lease is still active, so this is practically always a real problem — usually a statically configured address colliding with a DHCP lease. An event is recorded for both devices. While the conflict lasts it is re-reported every 10 minutes (shared cooldown per IP for both sources), so the dashboard's *Aktivni IP konflikti* card (conflicts in the last 15 minutes) stays lit until it is resolved.
 
 ## Vendor mismatch (possible MAC spoofing)
 

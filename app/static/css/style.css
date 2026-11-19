@@ -2138,3 +2138,9 @@ a.stat-link:hover {
   vertical-align: middle;
   font-variant-numeric: tabular-nums;
 }
+
+/* date picker open: lift its card above following cards (see DateTimePicker.raiseHost) */
+.dtp-raised {
+  position: relative;
+  z-index: 60;
+}

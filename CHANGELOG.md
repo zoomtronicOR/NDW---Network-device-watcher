@@ -6,7 +6,11 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
-## [Unreleased]
+## [1.0.1] - 2026-11-19
+
+### Fixed
+- False IP conflict when one device uses two MAC addresses (e.g. a phone with a private MAC on one SSID and its real MAC on another, which the DHCP server gives the same IP). MACs reporting the same DHCP hostname are now treated as one device, in both the ARP listener and the scanner.
+- The date-time picker popup was covered by the next card when cards use the glass style (Network Time Machine, History, System logs).
 
 ### Added
 - Full documentation in `docs/`: installation (Proxmox LXC, reverse proxy, backup, upgrade, uninstall), user guide, configuration reference, how detection works, integrations (MQTT/Home Assistant, webhook, e-mail, Omada), REST API, architecture and data model, operations & troubleshooting, development and release process.
@@ -74,4 +78,5 @@ First public release.
 - Excel, CSV and PDF export; themes and custom background image.
 - systemd units for deployment in a Proxmox LXC container.
 
+[1.0.1]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.1
 [1.0.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.0

@@ -11,6 +11,7 @@ from app.models.device import Device
 from app.models.device_event import DeviceEvent
 from app.models.enums import ConnectionType, EventType
 from app.models.ip_history import IpHistory
+from app.services.device_identity import same_physical_device
 from app.services.scanner import ScanResult
 from app.services.vendor import lookup_vendor
 
@@ -240,6 +241,9 @@ class DetectionEngine:
                     recent.append(other)
             if not recent or self._conflict_recently_recorded(result.ip, now):
                 continue
+            claimant = devices_by_mac.get(result.mac)
+            if claimant is not None and same_physical_device([claimant, *recent]):
+                continue  # one device with several MACs (private/real MAC per SSID), not a conflict
 
             macs = [result.mac] + [o.mac_address for o in recent]
             for mac in macs:

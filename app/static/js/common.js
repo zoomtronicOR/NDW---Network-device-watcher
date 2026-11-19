@@ -413,8 +413,21 @@ const DateTimePicker = {
     const onOutside = (e) => {
       if (!wrap.contains(e.target)) close();
     };
+    // Cards with backdrop-filter (glass style) are separate stacking contexts,
+    // so the popup's z-index only counts inside its own card and the NEXT card
+    // painted over it. Lift the hosting card above its siblings while open.
+    // Every ancestor that can be its own stacking context is lifted -- raising
+    // only the nearest one (e.g. the toolbar inside the card) is not enough.
+    const raiseHost = (on) => {
+      for (let el = wrap.parentElement; el && el !== document.body; el = el.parentElement) {
+        if (el.matches(".panel, .toolbar, .stat-card, .table-wrap, .settings-row, section")) {
+          el.classList.toggle("dtp-raised", on);
+        }
+      }
+    };
     function close() {
       pop.hidden = true;
+      raiseHost(false);
       document.removeEventListener("mousedown", onOutside, true);
     }
 
@@ -502,6 +515,7 @@ const DateTimePicker = {
       ctl.view = new Date(ctl.draft);
       render();
       pop.hidden = false;
+      raiseHost(true);
       document.addEventListener("mousedown", onOutside, true);
     });
 
