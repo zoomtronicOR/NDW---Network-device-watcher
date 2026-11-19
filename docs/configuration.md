@@ -130,4 +130,4 @@ Uploaded images (JPG/PNG/WEBP, max 8 MB, downscaled to 2560 px) are stored in `u
 
 ## Per-browser preferences
 
-Stored in the browser's `localStorage`, not in the database: chart style and colors, dashboard ranges, Ping view and period, device-table visible columns and page size, Sistem view.
+Stored in the browser's `localStorage`, not in the database: chart style, colors and line thickness, dashboard ranges, Ping view, period and meter thickness, device-table visible columns and page size, device presence period, Sistem view.

@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
+## [1.1.0] - 2026-11-19
+
+### Added
+- Device detail: **Prisutnost** (presence) section right under Uptime — online time, offline time and availability for today, and an online/offline step chart (today / 24 h / 7 days / 30 days) with the recorded state changes as points and a hover tooltip.
+- Device detail: hover tooltip on the Uptime bar (state, from–to, duration).
+- New endpoint `GET /api/devices/{id}/presence`.
+- Ping → *Merači*: "Debljina" slider to make the rows compact so many targets fit on one screen.
+- Dashboard: adjustable line thickness in the ⋮ menu of the series charts.
+
+### Changed
+- The Uptime bar now covers the whole history since the device was first seen (it used to be built from the last 100 events only, drawing everything older as online).
+- Default chart line is thinner (1.5 px instead of 2 px).
+
 ## [1.0.1] - 2026-11-19
 
 ### Fixed
@@ -78,5 +91,6 @@ First public release.
 - Excel, CSV and PDF export; themes and custom background image.
 - systemd units for deployment in a Proxmox LXC container.
 
+[1.1.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.1.0
 [1.0.1]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.1
 [1.0.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.0

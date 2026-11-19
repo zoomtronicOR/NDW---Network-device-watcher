@@ -40,9 +40,11 @@ function setView(view) {
   document.getElementById("ping-meter-list").hidden = view !== "meters";
   // The period only applies to the cards' charts; meters show the latest sample.
   const range = document.getElementById("ping-range");
-  if (range) range.style.visibility = view === "cards" ? "" : "hidden";
+  if (range) range.style.display = view === "cards" ? "" : "none";
   const note = document.getElementById("ping-range-note");
-  if (note) note.style.visibility = view === "cards" ? "" : "hidden";
+  if (note) note.style.display = view === "cards" ? "" : "none";
+  const density = document.getElementById("meter-density-wrap");
+  if (density) density.hidden = view !== "meters";
 }
 
 function colorForRtt(rttMs, bands) {
@@ -179,6 +181,28 @@ async function loadPing() {
   }
 }
 
+// Meter row thickness: 0 = most compact, 100 = original spacious layout.
+// Drives the --md (meter density) CSS factor; below ~0.6 the value label
+// moves beside the cursor and the scale is hidden so rows can get very thin.
+function applyMeterDensity(value) {
+  const list = document.getElementById("ping-meter-list");
+  const md = 0.3 + (0.7 * value) / 100;
+  list.style.setProperty("--md", md.toFixed(3));
+  list.classList.toggle("compact", md < 0.6);
+}
+
+function initMeterDensity() {
+  const input = document.getElementById("meter-density");
+  if (!input) return;
+  const saved = Number(Prefs.get("nw_meter_density", 100));
+  input.value = Number.isFinite(saved) ? saved : 100;
+  applyMeterDensity(Number(input.value));
+  input.addEventListener("input", () => {
+    applyMeterDensity(Number(input.value));
+    Prefs.set("nw_meter_density", Number(input.value));
+  });
+}
+
 function initRangeChips() {
   const wrap = document.getElementById("ping-range");
   wrap.innerHTML = PING_RANGES.map(([h, l]) => `<button type="button" class="range-chip" data-hours="${h}">${l}</button>`).join("");
@@ -201,6 +225,7 @@ function initViewToggle() {
   setView(currentView);
 }
 
+initMeterDensity();
 initViewToggle();
 initRangeChips();
 loadPing();

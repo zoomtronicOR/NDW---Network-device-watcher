@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import case, func, or_, select
@@ -13,6 +13,7 @@ from app.models.device_event import DeviceEvent
 from app.models.enums import EventType
 from app.models.ip_history import IpHistory
 from app.schemas.device import DeviceDetailOut, DeviceListResponse, DeviceOut, DeviceUpdate
+from app.services.notification_gate import local_timezone
 from app.services.vendor import lookup_vendor
 
 router = APIRouter(tags=["devices"])
@@ -121,6 +122,90 @@ def get_device(device_id: int, db: Session = Depends(get_db)) -> DeviceDetailOut
     )
 
     return DeviceDetailOut.from_device_detail(device, ip_history=ip_history, events=events)
+
+
+_STATE_EVENTS = {
+    EventType.NEW_DEVICE.value: True,
+    EventType.DEVICE_RETURNED.value: True,
+    EventType.DEVICE_OFFLINE.value: False,
+}
+
+
+@router.get("/devices/{device_id}/presence")
+def device_presence(device_id: int, hours: float = 24, db: Session = Depends(get_db)) -> dict:
+    """Online/offline timeline of one device, reconstructed from its state
+    events (NEW / RETURNED / OFFLINE) -- per-scan samples are not stored, only
+    state changes, so `points` are the recorded observations of a change plus
+    the current state. Also returns online/offline time since local midnight.
+    """
+    device = db.get(Device, device_id)
+    if device is None:
+        raise HTTPException(status_code=404, detail="Device not found")
+
+    hours = max(1.0, min(hours, 24 * 90))
+    now = datetime.now(timezone.utc)
+    tz = local_timezone(db)
+    midnight = datetime.now(tz).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
+    window_start = min(now - timedelta(hours=hours), midnight)
+
+    state_types = list(_STATE_EVENTS)
+    before = db.execute(
+        select(DeviceEvent.event_type)
+        .where(DeviceEvent.device_id == device_id, DeviceEvent.event_type.in_(state_types), DeviceEvent.timestamp < window_start)
+        .order_by(DeviceEvent.timestamp.desc())
+        .limit(1)
+    ).scalar_one_or_none()
+    events = db.execute(
+        select(DeviceEvent.timestamp, DeviceEvent.event_type)
+        .where(DeviceEvent.device_id == device_id, DeviceEvent.event_type.in_(state_types), DeviceEvent.timestamp >= window_start)
+        .order_by(DeviceEvent.timestamp)
+    ).all()
+
+    first_seen = device.first_seen
+    # Segments: (start, end, online). Before first_seen the device didn't exist.
+    segments: list[list] = []
+    cursor = max(window_start, first_seen) if first_seen else window_start
+    state = _STATE_EVENTS[before] if before else (True if first_seen and first_seen < window_start else None)
+    points = []
+    for ts, etype in events:
+        new_state = _STATE_EVENTS[etype]
+        if state is not None and ts > cursor:
+            segments.append([cursor, ts, state])
+        cursor = max(cursor, ts)
+        state = new_state
+        points.append({"timestamp": ts.isoformat(), "online": new_state, "event_type": etype})
+    if state is None:
+        state = device.is_online
+    if now > cursor:
+        segments.append([cursor, now, state])
+    points.append({"timestamp": now.isoformat(), "online": bool(device.is_online), "event_type": "NOW"})
+
+    def seconds_in(start: datetime, online: bool) -> int:
+        total = 0.0
+        for s, e, st in segments:
+            if st != online:
+                continue
+            overlap = (min(e, now) - max(s, start)).total_seconds()
+            if overlap > 0:
+                total += overlap
+        return int(total)
+
+    view_start = now - timedelta(hours=hours)
+    return {
+        "start": view_start.isoformat(),
+        "end": now.isoformat(),
+        "segments": [
+            {"start": max(s, view_start).isoformat(), "end": e.isoformat(), "online": st}
+            for s, e, st in segments
+            if e > view_start
+        ],
+        "points": [p for p in points if p["timestamp"] >= view_start.isoformat()],
+        "today": {
+            "since": midnight.isoformat(),
+            "online_seconds": seconds_in(midnight, True),
+            "offline_seconds": seconds_in(midnight, False),
+        },
+    }
 
 
 @router.patch("/devices/{device_id}", response_model=DeviceOut)

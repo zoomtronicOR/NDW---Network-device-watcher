@@ -22,7 +22,7 @@ A ★ next to the status marks a **trusted** (*poverljiv*) device — see [trust
 - **Online uređaji kroz vreme** (online devices over time) — choose the range with the chips 1h, 6h, 12h, 24h, 7d, 10d, 30d, 60d.
 - **Poslednji događaji** (recent events) — choose the period (1 h – 30 days). Each row shows the device name, MAC, IP, connection type, vendor, a description of the change ("IP: old → new", scan size, …) and the time. Click a row to open the device.
 - **Novi uređaji po danu** (new devices per day, 30 days), **LAN / Wi-Fi**, **Tip uređaja** (device types), **Top proizvođači** (top vendors).
-- **⋮ menu on every chart** — chart style (*Površina* area, *Linija* line, *Barovi* bars) and color (10 presets or *Druga…* for any color); donut and bar charts offer six palettes. These choices are remembered per browser.
+- **⋮ menu on every chart** — chart style (*Površina* area, *Linija* line, *Barovi* bars), color (10 presets or *Druga…* for any color) and *Debljina linije* (line thickness, 0.5–4 px); donut and bar charts offer six palettes. These choices are remembered per browser.
 
 ## Uređaji (Devices)
 
@@ -41,7 +41,8 @@ Columns: *Status*, *Tip* (type with icon; **AUTO** = recognized automatically), 
 Click a row to open the panel:
 
 - **Osnovne informacije** — IP, hostname, vendor, type, connection (with access point name for Wi-Fi), first/last seen, number of sightings, Wi-Fi signal and SSID, DHCP hostname, switch port.
-- **Uptime** — a bar showing online (green) and offline (red) periods since the device was first seen; hover for exact times.
+- **Uptime** — a bar showing online (green) and offline (red) periods since the device was first seen (limited by the history retention); hover a segment for its state, start, end and duration.
+- **Prisutnost** (presence) — *Online danas*, *Offline danas* and *Dostupnost danas* (availability) since local midnight, and a chart with time on the horizontal axis and the state (Online / Offline) on the vertical axis for *Danas*, *24h*, *7 dana* or *30 dana*. The points mark the moments a state change was recorded (the device disappeared / came back); the last point is the current state. Hover the chart to see the state under the cursor with its start, end and duration. NDW records state changes, not every individual scan.
 - **Korisnička podešavanja** (your settings):
   - *Naziv* — a friendly name.
   - *Tip uređaja* — pick from the suggestions or type your own; a typed type is never changed automatically. Clear it to let the app classify the device again.
@@ -61,7 +62,7 @@ A trusted device is one you know and do not want routine alerts about (family ph
 Continuous ping monitoring of any targets (LAN devices or internet hosts), configured in *Podešavanja → Ping*.
 
 - **Kartice** (cards) view — per target: average RTT, packet loss, min/max, last measurement time and a chart with ms and time axes. Choose the period: 1h, 6h, 12h, 24h, 7 dana, 10 dana. For longer periods each point is an average over a time bucket (shown above the cards). Red dots on the baseline = target unreachable, yellow = partial packet loss, **▲** at the top = a spike far above the usual range (value in the tooltip). A card turns red when the target is unreachable right now.
-- **Merači** (meters) view — one row per target with a colored scale and a cursor at the current RTT.
+- **Merači** (meters) view — one row per target with a colored scale and a cursor at the current RTT. The **Debljina** (thickness) slider makes the rows thinner so many targets fit on one screen; in the most compact setting the RTT value is shown beside the cursor and the scale is hidden.
 
 ## Istorija (History)
 

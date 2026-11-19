@@ -216,6 +216,7 @@ const Charts = {
     height = 200,
     fixedPixelHeight = false,
     xDomain = null,
+    strokeWidth = 1.5,
   } = {}) {
     this.clear(container);
     const minPoints = xType === "time" ? 2 : 1;
@@ -284,9 +285,9 @@ const Charts = {
         const areaPath = `${linePath} L ${sxi(points.length - 1)} ${height - padB} L ${sxi(0)} ${height - padB} Z`;
         svgEl.appendChild(this.svg("path", { d: areaPath, fill: `url(#${gradId})`, stroke: "none" }));
       }
-      svgEl.appendChild(this.svg("path", { d: linePath, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+      svgEl.appendChild(this.svg("path", { d: linePath, fill: "none", stroke: color, "stroke-width": strokeWidth, "stroke-linejoin": "round" }));
       if (xType === "category" && points.length <= 45) {
-        points.forEach((p, i) => svgEl.appendChild(this.svg("circle", { cx: sxi(i), cy: sy(ys[i]), r: 2.5, fill: color })));
+        points.forEach((p, i) => svgEl.appendChild(this.svg("circle", { cx: sxi(i), cy: sy(ys[i]), r: 1.5 + strokeWidth / 2, fill: color })));
       }
     }
 
@@ -535,6 +536,119 @@ const Charts = {
             <div class="ct-time">${this.fmtFull(xs[i])}</div>`,
         };
       },
+    });
+
+    container.appendChild(svgEl);
+  },
+
+  // ---------- device presence (device detail panel) ----------
+
+  // Step chart of one device's online/offline state over time. `data` comes
+  // from GET /api/devices/{id}/presence: segments [{start,end,online}] and
+  // points [{timestamp, online, event_type}] (recorded state changes + now).
+  presenceChart(container, data, { height = 120 } = {}) {
+    this.clear(container);
+    if (!data || !data.segments || !data.segments.length) {
+      container.innerHTML = '<div class="empty">Nema podataka za izabrani period</div>';
+      return;
+    }
+    const width = 640;
+    const padL = 58;
+    const padR = 12;
+    const padT = 12;
+    const padB = 24;
+    const t0 = new Date(data.start).getTime();
+    const t1 = new Date(data.end).getTime();
+    const sx = (t) => padL + ((Math.min(Math.max(t, t0), t1) - t0) / (t1 - t0 || 1)) * (width - padL - padR);
+    const yOn = padT + 14;
+    const yOff = height - padB - 14;
+    const okColor = "#34d399";
+    const badColor = "#f87171";
+
+    const svgEl = this.svg("svg", { viewBox: `0 0 ${width} ${height}`, class: "chart-svg" });
+    svgEl.style.width = "100%";
+    svgEl.style.height = "auto";
+
+    // level guides + labels
+    [[yOn, "Online"], [yOff, "Offline"]].forEach(([y, lbl]) => {
+      svgEl.appendChild(this.svg("line", { x1: padL, x2: width - padR, y1: y, y2: y, class: "chart-grid" }));
+      svgEl.appendChild(this.text(padL - 8, y + 3.5, lbl, { "text-anchor": "end" }));
+    });
+    svgEl.appendChild(this.svg("line", { x1: padL, x2: width - padR, y1: height - padB, y2: height - padB, class: "chart-axis-line" }));
+    this.drawTimeXAxis(svgEl, t0, t1, sx, { height, padB, padL, width, padR });
+
+    const segs = data.segments.map((s) => ({ a: new Date(s.start).getTime(), b: new Date(s.end).getTime(), on: s.online }));
+
+    // translucent bands so the state reads at a glance
+    segs.forEach((s) => {
+      const x = sx(s.a);
+      const w = Math.max(sx(s.b) - x, 0.8);
+      const y = s.on ? yOn : yOff;
+      svgEl.appendChild(
+        this.svg("rect", { x, y: Math.min(y, height - padB), width: w, height: height - padB - y, fill: s.on ? okColor : badColor, "fill-opacity": s.on ? 0.14 : 0.1 })
+      );
+    });
+
+    // step line
+    let d = "";
+    segs.forEach((s, i) => {
+      const y = s.on ? yOn : yOff;
+      d += i === 0 ? `M ${sx(s.a)} ${y}` : ` L ${sx(s.a)} ${y}`;
+      d += ` L ${sx(s.b)} ${y}`;
+    });
+    svgEl.appendChild(this.svg("path", { d, fill: "none", stroke: "var(--text-dim)", "stroke-width": 1.2, "stroke-opacity": 0.6 }));
+    segs.forEach((s) => {
+      const y = s.on ? yOn : yOff;
+      svgEl.appendChild(this.svg("line", { x1: sx(s.a), x2: sx(s.b), y1: y, y2: y, stroke: s.on ? okColor : badColor, "stroke-width": 3, "stroke-linecap": "round" }));
+    });
+
+    // observation points (recorded state changes + current state)
+    (data.points || []).forEach((p) => {
+      const t = new Date(p.timestamp).getTime();
+      if (t < t0) return;
+      svgEl.appendChild(
+        this.svg("circle", { cx: sx(t), cy: p.online ? yOn : yOff, r: p.event_type === "NOW" ? 4.5 : 3.5, fill: p.online ? okColor : badColor, stroke: "var(--bg)", "stroke-width": 1.5 })
+      );
+    });
+
+    // hover: state under the cursor
+    container.style.position = "relative";
+    const tooltip = document.createElement("div");
+    tooltip.className = "chart-tooltip";
+    container.appendChild(tooltip);
+    const hoverLine = this.svg("line", { x1: 0, x2: 0, y1: padT, y2: height - padB, class: "chart-hover-line", opacity: 0, "pointer-events": "none" });
+    svgEl.appendChild(hoverLine);
+    const overlay = this.svg("rect", { x: padL, y: 0, width: width - padL - padR, height, fill: "transparent" });
+    overlay.style.cursor = "crosshair";
+    svgEl.appendChild(overlay);
+    const fmtDur = (ms) => {
+      const m = Math.round(ms / 60000);
+      if (m < 60) return `${m} min`;
+      const h = Math.floor(m / 60);
+      return h < 24 ? `${h}h ${m % 60}min` : `${Math.floor(h / 24)}d ${h % 24}h`;
+    };
+    overlay.addEventListener("mousemove", (evt) => {
+      const rect = svgEl.getBoundingClientRect();
+      const vx = ((evt.clientX - rect.left) / rect.width) * width;
+      const t = t0 + ((vx - padL) / (width - padL - padR)) * (t1 - t0);
+      const seg = segs.find((s) => t >= s.a && t <= s.b);
+      hoverLine.setAttribute("x1", vx);
+      hoverLine.setAttribute("x2", vx);
+      hoverLine.setAttribute("opacity", 1);
+      tooltip.innerHTML = seg
+        ? `<div class="ct-val ${seg.on ? "" : "ct-bad"}">${seg.on ? "Online" : "Offline"} &middot; ${fmtDur(seg.b - seg.a)}</div>
+           <div class="ct-time">${this.fmtFull(seg.a)} &rarr; ${this.fmtFull(seg.b)}</div>
+           <div class="ct-time">kursor: ${this.fmtFull(t)}</div>`
+        : `<div class="ct-time">nema podataka (uređaj još nije bio viđen)</div><div class="ct-time">${this.fmtFull(t)}</div>`;
+      tooltip.style.display = "block";
+      const leftPct = (vx / width) * 100;
+      tooltip.classList.toggle("ct-align-right", leftPct > 60);
+      tooltip.classList.toggle("ct-align-left", leftPct < 20);
+      tooltip.style.left = `${leftPct}%`;
+    });
+    overlay.addEventListener("mouseleave", () => {
+      hoverLine.setAttribute("opacity", 0);
+      tooltip.style.display = "none";
     });
 
     container.appendChild(svgEl);

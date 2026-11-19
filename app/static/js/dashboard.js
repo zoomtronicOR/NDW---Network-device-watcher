@@ -60,6 +60,10 @@ const getPalette = (key) => {
   const p = Prefs.get(prefKey(key, "palette"), "default");
   return Charts.palettes[p] ? p : "default";
 };
+const getStroke = (key) => {
+  const w = Number(Prefs.get(prefKey(key, "stroke"), 1.5));
+  return Number.isFinite(w) && w >= 0.5 && w <= 5 ? w : 1.5;
+};
 const getTimelineRange = () => {
   const h = Number(Prefs.get("nw_timeline_range", 24));
   return TIMELINE_RANGES.some(([v]) => v === h) ? h : 24;
@@ -95,6 +99,7 @@ function renderChartCard(key) {
       height: card.height || 200,
       fixedPixelHeight: !!card.fixedPixelHeight,
       xDomain: data.start ? [data.start, data.end] : null,
+      strokeWidth: getStroke(key),
     });
   } else {
     const colors = Charts.palettes[getPalette(key)].colors;
@@ -118,6 +123,8 @@ function buildChartMenu(menu) {
       .map((c) => `<button type="button" class="swatch-btn" data-color="${c}" style="background:${c}" aria-label="Boja ${c}"></button>`)
       .join("");
     body += `<label class="swatch-custom" title="Izaberi bilo koju boju"><input type="color" class="color-custom" /><span>Druga…</span></label></div>`;
+    body += `<div class="chart-menu-section">Debljina linije</div>
+      <label class="stroke-control"><input type="range" class="stroke-range" min="0.5" max="4" step="0.25" /><output class="stroke-out"></output></label>`;
   } else {
     body += '<div class="chart-menu-section">Paleta boja</div>';
     body += Object.entries(Charts.palettes)
@@ -155,6 +162,14 @@ function buildChartMenu(menu) {
       renderChartCard(key);
     })
   );
+  const stroke = dropdown.querySelector(".stroke-range");
+  if (stroke) {
+    stroke.addEventListener("input", () => {
+      Prefs.set(prefKey(key, "stroke"), Number(stroke.value));
+      dropdown.querySelector(".stroke-out").textContent = `${stroke.value}px`;
+      renderChartCard(key);
+    });
+  }
   const custom = dropdown.querySelector(".color-custom");
   if (custom) {
     custom.addEventListener("input", () => {
@@ -181,6 +196,11 @@ function syncMenuState(key) {
     menu.querySelectorAll("[data-color]").forEach((b) => b.classList.toggle("active", b.dataset.color.toLowerCase() === color));
     const custom = menu.querySelector(".color-custom");
     if (custom) custom.value = color;
+    const stroke = menu.querySelector(".stroke-range");
+    if (stroke && document.activeElement !== stroke) {
+      stroke.value = getStroke(key);
+      menu.querySelector(".stroke-out").textContent = `${getStroke(key)}px`;
+    }
   } else {
     const pal = getPalette(key);
     menu.querySelectorAll("[data-palette]").forEach((b) => b.classList.toggle("active", b.dataset.palette === pal));

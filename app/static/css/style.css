@@ -1180,9 +1180,10 @@ table.device-table {
 }
 
 .ping-meter-list {
+  --md: 1; /* meter density factor, set by the "Debljina" slider (0.3 .. 1) */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: calc(10px * var(--md));
 }
 
 .ping-meter-row {
@@ -1192,7 +1193,7 @@ table.device-table {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  padding: 12px 20px;
+  padding: calc(12px * var(--md)) 20px;
   -webkit-backdrop-filter: var(--card-backdrop-filter, none);
   backdrop-filter: var(--card-backdrop-filter, none);
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -1212,12 +1213,12 @@ table.device-table {
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
-  padding-top: 22px;
+  padding-top: calc(22px * var(--md));
 }
 
 .ping-meter-track {
   position: relative;
-  height: 12px;
+  height: max(4px, calc(12px * var(--md)));
   border-radius: 6px;
   display: flex;
   overflow: hidden;
@@ -1233,9 +1234,9 @@ table.device-table {
    round the segmented bar's corners). */
 .ping-meter-cursor {
   position: absolute;
-  top: 28px;
-  width: 11px;
-  height: 11px;
+  top: calc(22px * var(--md) + max(4px, calc(12px * var(--md))) / 2);
+  width: max(8px, calc(11px * var(--md)));
+  height: max(8px, calc(11px * var(--md)));
   border-radius: 50%;
   border: 2px solid var(--bg);
   transform: translate(-50%, -50%);
@@ -2143,4 +2144,138 @@ a.stat-link:hover {
 .dtp-raised {
   position: relative;
   z-index: 60;
+}
+
+/* ---------- device detail: uptime tooltip + presence ---------- */
+
+.uptime-wrap {
+  position: relative;
+}
+
+.uptime-bar .seg {
+  cursor: crosshair;
+}
+
+.presence-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.presence-head h3 {
+  margin: 0;
+}
+
+.presence-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.presence-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+.presence-stat .lbl {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.presence-stat .val {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.presence-stat .val.ok {
+  color: var(--ok);
+}
+
+.presence-stat .val.bad {
+  color: var(--bad);
+}
+
+#presence-chart {
+  min-height: 60px;
+}
+
+/* ---------- ping meters: density ---------- */
+
+.ping-meter-list .ping-address {
+  font-size: calc(11px + 4px * var(--md));
+}
+
+.ping-meter-list .ping-meter-loss .val {
+  font-size: calc(11px + 4px * var(--md));
+}
+
+/* compact: value label beside the cursor, no scale, label inline */
+.ping-meter-list.compact .ping-meter-cursor-label {
+  bottom: auto;
+  top: 50%;
+  left: calc(100% + 4px);
+  transform: translateY(-50%);
+  padding: 0 5px;
+  font-size: 10px;
+}
+
+.ping-meter-list.compact .ping-meter-scale {
+  display: none;
+}
+
+.ping-meter-list.compact .ping-meter-info {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ping-meter-list.compact .ping-meter-loss .lbl {
+  display: none;
+}
+
+.density-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.density-control[hidden] {
+  display: none;
+}
+
+.density-control input[type="range"],
+.stroke-control input[type="range"] {
+  width: 120px;
+  accent-color: var(--primary);
+}
+
+.stroke-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 8px;
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+.stroke-control output {
+  min-width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }

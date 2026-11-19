@@ -32,6 +32,7 @@ const Api = {
   listDevices: (params) => Api._get(`/api/devices?${new URLSearchParams(params).toString()}`),
   listEvents: (params) => Api._get(`/api/events?${new URLSearchParams(params).toString()}`),
   getDevice: (id) => Api._get(`/api/devices/${id}`),
+  getDevicePresence: (id, hours = 24) => Api._get(`/api/devices/${id}/presence?hours=${hours}`),
   updateDevice: (id, payload) => Api._send("PATCH", `/api/devices/${id}`, payload),
   deleteDevice: (id) => Api._send("DELETE", `/api/devices/${id}`),
   getMqttSettings: () => Api._get("/api/settings/mqtt"),

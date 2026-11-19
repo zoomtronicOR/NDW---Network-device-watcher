@@ -301,7 +301,7 @@ function buildUptimeBar(device, events) {
   return segments
     .map((s) => {
       const pct = Math.max(((s.end - s.start) / span) * 100, 0.5);
-      return `<span class="seg ${s.online ? "ok" : "bad"}" style="width:${pct}%" title="${s.online ? "Online" : "Offline"}: ${fmtDateTime(new Date(s.start).toISOString())} - ${fmtDateTime(new Date(s.end).toISOString())}"></span>`;
+      return `<span class="seg ${s.online ? "ok" : "bad"}" style="width:${pct}%" data-start="${s.start}" data-end="${s.end}" data-online="${s.online ? 1 : 0}"></span>`;
     })
     .join("");
 }
@@ -368,8 +368,30 @@ function renderDeviceModal(device) {
 
     <div class="modal-section">
       <h3>Uptime</h3>
-      <div class="uptime-bar">${buildUptimeBar(device, device.events)}</div>
+      <div class="uptime-wrap">
+        <div class="uptime-bar">${buildUptimeBar(device, device.events)}</div>
+        <div class="chart-tooltip" id="uptime-tooltip"></div>
+      </div>
       <div class="uptime-caption"><span>${fmtDateTime(device.first_seen)}</span><span>sada</span></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="presence-head">
+        <h3>Prisutnost</h3>
+        <div class="range-chips" id="presence-range" role="group" aria-label="Period grafikona">
+          <button type="button" class="range-chip" data-hours="today">Danas</button>
+          <button type="button" class="range-chip" data-hours="24">24h</button>
+          <button type="button" class="range-chip" data-hours="168">7 dana</button>
+          <button type="button" class="range-chip" data-hours="720">30 dana</button>
+        </div>
+      </div>
+      <div class="presence-stats">
+        <div class="presence-stat"><span class="lbl">Online danas</span><span class="val ok" id="presence-online">-</span></div>
+        <div class="presence-stat"><span class="lbl">Offline danas</span><span class="val bad" id="presence-offline">-</span></div>
+        <div class="presence-stat"><span class="lbl">Dostupnost danas</span><span class="val" id="presence-pct">-</span></div>
+      </div>
+      <div id="presence-chart"><div class="empty">Učitavanje...</div></div>
+      <div class="field-hint">Tačke označavaju trenutke kada je zabeležena promena stanja (uređaj nestao / vratio se), a poslednja tačka je trenutno stanje. Pređi mišem preko grafikona za detalje.</div>
     </div>
 
     <div class="modal-section">
@@ -450,9 +472,112 @@ function renderDeviceModal(device) {
     </div>
   `;
 
+  initUptimeTooltip();
+  initPresence(device);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
   document.getElementById("save-btn").addEventListener("click", () => saveDevice(device.id));
   document.getElementById("delete-btn").addEventListener("click", () => confirmDelete(device.id));
+}
+
+function fmtSpan(ms) {
+  const m = Math.max(0, Math.round(ms / 60000));
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ${String(m % 60).padStart(2, "0")}min`;
+  return `${Math.floor(h / 24)}d ${h % 24}h`;
+}
+
+// Custom tooltip for the Uptime bar segments (state, from-to, duration).
+function initUptimeTooltip() {
+  const wrap = document.querySelector(".uptime-wrap");
+  const tip = document.getElementById("uptime-tooltip");
+  if (!wrap || !tip) return;
+  wrap.querySelectorAll(".seg").forEach((seg) => {
+    seg.addEventListener("mousemove", (evt) => {
+      const start = Number(seg.dataset.start);
+      const end = Number(seg.dataset.end);
+      const on = seg.dataset.online === "1";
+      tip.innerHTML = `<div class="ct-val ${on ? "" : "ct-bad"}">${on ? "Online" : "Offline"} &middot; ${fmtSpan(end - start)}</div>
+        <div class="ct-time">${fmtDateTime(new Date(start).toISOString())} &rarr; ${fmtDateTime(new Date(end).toISOString())}</div>`;
+      const rect = wrap.getBoundingClientRect();
+      const leftPct = ((evt.clientX - rect.left) / rect.width) * 100;
+      tip.classList.toggle("ct-align-right", leftPct > 60);
+      tip.classList.toggle("ct-align-left", leftPct < 20);
+      tip.style.left = `${leftPct}%`;
+      tip.style.display = "block";
+    });
+    seg.addEventListener("mouseleave", () => {
+      tip.style.display = "none";
+    });
+  });
+}
+
+// The Uptime bar was built from the last 100 events only, so everything older
+// was silently drawn as "online". Rebuild it from the full presence timeline
+// (since first seen, bounded by the history retention).
+async function refreshUptimeBar(device) {
+  const bar = document.querySelector(".uptime-wrap .uptime-bar");
+  if (!bar) return;
+  const hours = Math.min(24 * 90, Math.max(1, (Date.now() - new Date(device.first_seen).getTime()) / 3600e3));
+  try {
+    const data = await Api.getDevicePresence(device.id, hours);
+    if (currentDeviceId !== device.id || !data.segments.length) return;
+    const t0 = new Date(data.start).getTime();
+    const span = Math.max(new Date(data.end).getTime() - t0, 1);
+    bar.innerHTML = data.segments
+      .map((s) => {
+        const a = new Date(s.start).getTime();
+        const b = new Date(s.end).getTime();
+        const pct = Math.max(((b - a) / span) * 100, 0.3);
+        return `<span class="seg ${s.online ? "ok" : "bad"}" style="width:${pct}%" data-start="${a}" data-end="${b}" data-online="${s.online ? 1 : 0}"></span>`;
+      })
+      .join("");
+    const caption = document.querySelector(".uptime-caption span");
+    if (caption) caption.textContent = fmtDateTime(data.start);
+    initUptimeTooltip();
+  } catch (err) {
+    console.error("uptime refresh failed", err);
+  }
+}
+
+// "Prisutnost": online/offline time today + step chart for the chosen period.
+function initPresence(device) {
+  refreshUptimeBar(device);
+  const chips = document.getElementById("presence-range");
+  if (!chips) return;
+  let range = Prefs.get("nw_presence_range", "24");
+  if (!chips.querySelector(`[data-hours="${range}"]`)) range = "24";
+
+  const load = async () => {
+    chips.querySelectorAll(".range-chip").forEach((b) => b.classList.toggle("active", b.dataset.hours === range));
+    let hours = Number(range);
+    if (range === "today") {
+      const midnight = new Date();
+      midnight.setHours(0, 0, 0, 0);
+      hours = Math.max(1, (Date.now() - midnight.getTime()) / 3600e3);
+    }
+    try {
+      const data = await Api.getDevicePresence(device.id, hours);
+      if (currentDeviceId !== device.id) return;
+      const t = data.today;
+      const total = t.online_seconds + t.offline_seconds;
+      document.getElementById("presence-online").textContent = fmtSpan(t.online_seconds * 1000);
+      document.getElementById("presence-offline").textContent = fmtSpan(t.offline_seconds * 1000);
+      document.getElementById("presence-pct").textContent = total ? `${Math.round((t.online_seconds / total) * 1000) / 10}%` : "-";
+      Charts.presenceChart(document.getElementById("presence-chart"), data);
+    } catch (err) {
+      console.error("presence failed", err);
+      document.getElementById("presence-chart").innerHTML = '<div class="empty">Greška pri učitavanju prisutnosti</div>';
+    }
+  };
+  chips.addEventListener("click", (e) => {
+    const b = e.target.closest(".range-chip");
+    if (!b) return;
+    range = b.dataset.hours;
+    Prefs.set("nw_presence_range", range);
+    load();
+  });
+  load();
 }
 
 async function saveDevice(id) {
