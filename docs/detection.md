@@ -26,6 +26,7 @@ If the neighbor table cannot be read, the cycle is skipped. If a scan returns **
 2. Reverse DNS.
 3. The DHCP hostname reported by the Omada controller (only fills an empty hostname or replaces a previous Omada-sourced one).
 4. For Omada access points and switches, their name in the controller.
+5. NetBIOS name (UDP 137 Node Status - Windows, Samba/NAS, printers) or mDNS name (unicast PTR query to UDP 5353 - Apple, Chromecast, ESPHome, Avahi/Linux, printers). Queried in a background thread of the scanner: new, returned and re-addressed devices right away, others every 6 hours. Stored in their own columns; used for the hostname only when it is otherwise empty.
 
 **Vendor** comes from the MAC's OUI prefix using Wireshark's manufacturer database (IEEE MA-L, MA-M and MA-S blocks). The worker downloads a fresh copy weekly into `data/manuf` and re-applies it to all devices; the copy bundled with the `manuf` Python package is the fallback. Randomized ("private", locally administered) MAC addresses used by phones and VMs have no vendor by definition — the UI shows *privatna MAC*. A manually entered vendor is locked.
 

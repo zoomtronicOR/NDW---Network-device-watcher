@@ -168,7 +168,7 @@ def apply_classification(db, omada_clients: dict | None, infra: dict | None) -> 
                 mac=d.mac_address,
                 vendor=d.vendor,
                 hostname=d.hostname,
-                dhcp_hostname=d.dhcp_hostname,
+                dhcp_hostname=d.dhcp_hostname or d.mdns_hostname or d.netbios_hostname,
                 ip=d.ip_address,
                 connection_type=d.connection_type,
                 omada_client=(omada_clients or {}).get(d.mac_address),

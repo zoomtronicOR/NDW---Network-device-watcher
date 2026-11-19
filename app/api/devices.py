@@ -29,6 +29,8 @@ _SORT_FIELDS = {
     "connection_type": Device.connection_type,
     "wifi_rssi": Device.wifi_rssi,
     "custom_name": Device.custom_name,
+    "netbios_hostname": Device.netbios_hostname,
+    "mdns_hostname": Device.mdns_hostname,
     "notes": Device.notes,
     "device_type": Device.device_type,
     "wifi_ssid": Device.wifi_ssid,
@@ -60,6 +62,8 @@ def list_devices(
                 Device.vendor.ilike(like),
                 Device.custom_name.ilike(like),
                 Device.dhcp_hostname.ilike(like),
+                Device.netbios_hostname.ilike(like),
+                Device.mdns_hostname.ilike(like),
                 Device.device_type.ilike(like),
             )
         )

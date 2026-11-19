@@ -34,7 +34,7 @@ The device table supports:
 - **Kolone** (columns) — choose visible columns; *10/50/100 / str.* page size.
 - **Export Excel / Export CSV / Export PDF** — the PDF period selector adds a "new devices per day" chart for the chosen period.
 
-Columns: *Status*, *Tip* (type with icon; **AUTO** = recognized automatically), *MAC*, *IP*, *Hostname*, *Vendor* (*privatna MAC* = randomized private address, vendor cannot be known), *Veza* (LAN/Wi-Fi), *Signal* (Wi-Fi RSSI, green ≥ −60 dBm, yellow ≥ −75 dBm, red below), *Prvi put viđen* / *Poslednji put viđen* (first/last seen), *Naziv* (your name), *Beleška* (notes).
+Columns: *Status*, *Tip* (type with icon; **AUTO** = recognized automatically), *MAC*, *IP*, *Hostname*, *NetBIOS* / *mDNS* (names the device announces itself), *Vendor* (*privatna MAC* = randomized private address, vendor cannot be known), *Veza* (LAN/Wi-Fi), *Signal* (Wi-Fi RSSI, green ≥ −60 dBm, yellow ≥ −75 dBm, red below), *Prvi put viđen* / *Poslednji put viđen* (first/last seen), *Naziv* (your name), *Beleška* (notes).
 
 ### Device detail
 

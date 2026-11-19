@@ -12,6 +12,7 @@ from app.models.device import Device
 from app.services.broadcast_client import broadcast_scan_result
 from app.services.detector import DetectionEngine
 from app.services.mqtt_client import mqtt_publisher
+from app.services.name_enricher import NameEnricher
 from app.services.device_classifier import apply_classification
 from app.services.omada_client import apply_omada_clients, fetch_clients, fetch_infra_devices
 from app.services.omada_client import is_configured as omada_is_configured
@@ -191,6 +192,8 @@ def main() -> None:
     signal.signal(signal.SIGINT, _handle_stop)
 
     logger.info("networkwatcher-scanner starting")
+    names = NameEnricher()  # NetBIOS / mDNS lookups in the background
+    names.start()
     while _running:
         cycle_start = time.monotonic()
         run_once()
@@ -208,6 +211,7 @@ def main() -> None:
                 break
             time.sleep(0.1)
 
+    names.stop()
     logger.info("networkwatcher-scanner stopped")
 
 

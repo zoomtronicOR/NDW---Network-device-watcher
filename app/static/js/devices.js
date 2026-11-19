@@ -4,6 +4,8 @@ const COLUMNS = [
   { key: "mac_address", label: "MAC", sortable: true, default: true },
   { key: "ip_address", label: "IP", sortable: true, default: true },
   { key: "hostname", label: "Hostname", sortable: true, default: true },
+  { key: "netbios_hostname", label: "NetBIOS", sortable: true, default: true },
+  { key: "mdns_hostname", label: "mDNS", sortable: true, default: true },
   { key: "vendor", label: "Vendor", sortable: true, default: true },
   { key: "connection_type", label: "Veza", sortable: true, default: true },
   { key: "wifi_rssi", label: "Signal", sortable: true, default: true, defaultOrder: "desc" },
@@ -140,6 +142,9 @@ function cellValue(device, key) {
       return `<span style="font-family:monospace">${escapeHtml(device.mac_address)}</span>`;
     case "ip_address":
       return escapeHtml(device.ip_address) || "-";
+    case "netbios_hostname":
+    case "mdns_hostname":
+      return device[key] ? `<span class="hostname-cell">${escapeHtml(device[key])}</span>` : '<span class="muted">-</span>';
     case "device_type":
       return device.device_type
         ? `<span class="type-cell" title="${device.device_type_auto ? "Automatski prepoznat tip" : "Tip uneo korisnik"}">${deviceTypeIcon(device.device_type)}<span>${escapeHtml(device.device_type)}</span>${device.device_type_auto ? '<span class="auto-tag">auto</span>' : ""}</span>`
