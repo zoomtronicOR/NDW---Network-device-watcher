@@ -90,5 +90,7 @@ const Api = {
   updateHistorySettings: (payload) => Api._send("PUT", "/api/settings/history", payload),
   runHistoryCleanup: () => Api._send("POST", "/api/settings/history/cleanup-now"),
   getTelemetry: () => Api._get("/api/telemetry"),
+  getSpecialSettings: () => Api._get("/api/settings/special"),
+  updateSpecialSettings: (payload) => Api._send("PUT", "/api/settings/special", payload),
   listNotifications: (params) => Api._get(`/api/notifications?${new URLSearchParams(params).toString()}`),
 };

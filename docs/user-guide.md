@@ -93,6 +93,7 @@ Settings are grouped in sub-tabs; each has a *Kako podesiti* (how to configure) 
 - **Istorija** — retention of event history and of ping statistics; *Pokreni čišćenje sada* runs the cleanup immediately.
 - **MQTT** / **SMTP** — broker / mail server settings with *Test MQTT* / *Send Test Email*. Below them: **Tiha zona** (quiet hours) with time zone.
 - **Webhook** — URL, custom headers, *Test Webhook*.
+- **Special** - devices you want to hear about every time they come online or go offline (add from the list or by MAC). Notifications go to all configured channels, also for trusted devices; *Obaveštavaj i tokom tihe zone* makes them ignore quiet hours. The card under the help card shows the current state of each special device.
 - **Omada** — controller connection; *Testiraj konekciju*, *Učitaj lokacije* (load sites), then pick and save a site.
 - **Izgled** (appearance) — theme, custom colors, card style (solid / transparent / glass), opacity, blur, border radius, background image (JPG/PNG/WEBP up to 8 MB) with opacity, blur, brightness, saturation, overlay, position, size and repeat.
 - **Backup** — *Export configuration* downloads all settings as JSON; *Import configuration* restores them.

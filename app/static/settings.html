@@ -37,6 +37,7 @@
     <div class="tab" data-subtab="mqtt">MQTT</div>
     <div class="tab" data-subtab="smtp">SMTP</div>
     <div class="tab" data-subtab="webhook">Webhook</div>
+    <div class="tab" data-subtab="special">Special</div>
     <div class="tab" data-subtab="omada">Omada</div>
     <div class="tab" data-subtab="appearance">Izgled</div>
     <div class="tab" data-subtab="backup">Backup</div>
@@ -540,6 +541,48 @@
       <li>Klikni <strong>"Test Webhook"</strong> da pošalješ probni POST i odmah vidiš da li endpoint prima podatke.</li>
     </ol>
     <div class="help-note">Isti skup događaja kao MQTT/SMTP, poštuje tihu zonu i trusted status uređaja.</div>
+  </div>
+  </div>
+
+  <div class="settings-row" id="panel-special" style="display:none">
+  <div class="panel" style="max-width:640px">
+    <h2>Special uređaji</h2>
+    <div class="field-hint" style="margin-bottom:12px">Za ove uređaje stiže obaveštenje svaki put kada se prijave na mrežu ili je napuste - u browseru, preko MQTT-a, webhook-a i e-maila (ako su podešeni), i kada je uređaj označen kao poverljiv.</div>
+    <div class="edit-form" style="grid-template-columns:1fr">
+      <div>
+        <label>Dodaj uređaj (izaberi sa liste ili upiši MAC adresu)</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="sp-add-input" list="sp-device-list" placeholder="npr. Telefon ili AA:BB:CC:DD:EE:FF" style="flex:1" />
+          <datalist id="sp-device-list"></datalist>
+          <button type="button" class="btn" id="sp-add-btn">+ Dodaj</button>
+        </div>
+      </div>
+      <div id="sp-list" class="sp-list"></div>
+      <div>
+        <label class="checkbox"><input type="checkbox" id="sp-ignore-quiet" /> Obaveštavaj i tokom tihe zone</label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn btn-primary" id="sp-save-btn">Sačuvaj podešavanja</button>
+    </div>
+    <div id="sp-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+
+  <div class="side-col">
+    <div class="panel help-card">
+      <h2>Kako podesiti</h2>
+      <ol>
+        <li>Izaberi uređaj sa liste (pretraga po nazivu, hostname-u, IP ili MAC adresi) ili upiši MAC adresu, pa klikni <strong>+ Dodaj</strong>. Na kraju klikni <strong>Sačuvaj podešavanja</strong>.</li>
+        <li>Obaveštenje stiže kada uređaj postane ONLINE (nov ili vraćen) ili OFFLINE (posle praga odsutnosti iz Podešavanja - Scanner).</li>
+        <li>Kanali: toast u browseru, MQTT tema <code>networkwatcher/events/special</code>, webhook događaj <code>SPECIAL_DEVICE</code> i e-mail - svaki samo ako je podešen.</li>
+        <li>Tiha zona važi i za special uređaje, osim ako uključiš <strong>Obaveštavaj i tokom tihe zone</strong>. Status poverljiv ne utišava ova obaveštenja.</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h2>Special uređaji - stanje</h2>
+      <div id="sp-status" class="sp-status"><div class="empty">Nema special uređaja</div></div>
+    </div>
   </div>
   </div>
 

@@ -10,6 +10,7 @@ const EVENT_META = {
   VENDOR_MISMATCH: { label: "VENDOR MISMATCH", cls: "warn" },
   IP_CONFLICT: { label: "IP KONFLIKT", cls: "bad" },
   SCAN_DETECTED: { label: "SKENIRANJE MREŽE", cls: "bad" },
+  SPECIAL_DEVICE: { label: "SPECIAL", cls: "new" },
 };
 
 const STATUS_META = {

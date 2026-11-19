@@ -67,6 +67,7 @@ Each group has `GET` (current values, secrets reported only as `password_set` / 
 |---|---|
 | `/api/settings/scanner` | Validates CIDRs |
 | `/api/settings/scan-detection` | GET also returns `known_scanners` (learned profiles), `last_heartbeat_at`, `packets_seen`; MACs are normalized |
+| `/api/settings/special` | `{macs, ignore_quiet_hours}`; GET also returns `devices` with current state |
 | `/api/settings/history` | `retention_days`, `ping_retention_days` (`null` = unlimited) |
 | `/api/settings/notifications` | Quiet hours and time zone (validated) |
 | `/api/settings/mqtt` · `/smtp` · `/webhook` · `/omada` · `/ping` · `/appearance` | |

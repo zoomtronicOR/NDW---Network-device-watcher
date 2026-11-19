@@ -94,6 +94,13 @@ During quiet hours: events are still recorded and shown in the UI; e-mails, MQTT
 | `recipients` | `[]` | One e-mail per recipient. |
 | `subject_prefix` | `[Network Watcher]` | |
 
+## Special devices — category `special`
+
+| Key | UI label | Default | Notes |
+|---|---|---|---|
+| `macs` | Special uređaji | `[]` | MACs notified on every online/offline change, on all channels, regardless of trusted status. |
+| `ignore_quiet_hours` | Obaveštavaj i tokom tihe zone | false | |
+
 ## Webhook — category `webhook`
 
 | Key | Default | Notes |

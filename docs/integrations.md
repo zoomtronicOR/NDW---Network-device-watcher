@@ -20,6 +20,7 @@ Configure in *Podešavanja → MQTT* and press *Test MQTT*. Topics with the defa
 | `networkwatcher/events/returned` | no | event JSON |
 | `networkwatcher/events/scan_detected` | no | event JSON + `target_count`, `window_seconds`, `reason` (known scanner) |
 | `networkwatcher/events/ip_conflict` | no | event JSON + `conflicting_macs` |
+| `networkwatcher/events/special` | no | special device online/offline: event JSON + `state` (`online`/`offline`), `name` |
 
 `<mac>` is normalized to lowercase with underscores, e.g. `aa_bb_cc_dd_ee_ff`. Event JSON: `{"mac": "AA:BB:CC:DD:EE:FF", "ip": "192.168.1.45", "event": "NEW_DEVICE"}`.
 
@@ -77,6 +78,7 @@ automation:
 |---|---|
 | `NEW_DEVICE`, `DEVICE_OFFLINE`, `DEVICE_RETURNED`, `VENDOR_MISMATCH` | – |
 | `IP_CONFLICT` | `conflicting_macs` |
+| `SPECIAL_DEVICE` | `state` (`online`/`offline`), `name` |
 | `SCAN_DETECTED` | `target_count`, `window_seconds`, `reason` (only for known scanners) |
 | `ANOMALY_BURST_NEW_DEVICES` | `new_devices` (list of MACs); `mac`/`ip` are `null` |
 | `TEST` (from *Test Webhook*) | `message` |

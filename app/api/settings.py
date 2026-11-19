@@ -383,6 +383,52 @@ def update_scan_detection_settings(
     return _read_scan_detection_settings(db)
 
 
+def _read_special_settings(db: Session) -> dict:
+    macs = [m.upper() for m in (get_setting(db, "special", "macs", []) or [])]
+    by_mac = {d.mac_address: d for d in db.execute(select(Device).where(Device.mac_address.in_(macs))).scalars()} if macs else {}
+    devices = []
+    for mac in macs:
+        d = by_mac.get(mac)
+        devices.append(
+            {
+                "mac": mac,
+                "id": d.id if d else None,
+                "name": (d.custom_name or d.hostname) if d else None,
+                "ip": d.ip_address if d else None,
+                "device_type": d.device_type if d else None,
+                "is_online": d.is_online if d else None,
+                "last_seen": d.last_seen.isoformat() if d and d.last_seen else None,
+            }
+        )
+    return {
+        "macs": macs,
+        "ignore_quiet_hours": bool(get_setting(db, "special", "ignore_quiet_hours", False)),
+        "devices": devices,
+    }
+
+
+@router.get("/settings/special")
+def get_special_settings(db: Session = Depends(get_db)) -> dict:
+    return _read_special_settings(db)
+
+
+@router.put("/settings/special")
+def update_special_settings(payload: dict, db: Session = Depends(get_db)) -> dict:
+    if "macs" in payload:
+        cleaned = []
+        for mac in payload["macs"] or []:
+            hex_only = re.sub(r"[^0-9A-Fa-f]", "", str(mac))
+            if len(hex_only) != 12:
+                raise HTTPException(status_code=400, detail=f"Neispravna MAC adresa: {mac}")
+            norm = ":".join(hex_only[i : i + 2] for i in range(0, 12, 2)).upper()
+            if norm not in cleaned:
+                cleaned.append(norm)
+        set_setting(db, "special", "macs", cleaned)
+    if "ignore_quiet_hours" in payload:
+        set_setting(db, "special", "ignore_quiet_hours", bool(payload["ignore_quiet_hours"]))
+    return _read_special_settings(db)
+
+
 def _read_webhook_settings(db: Session) -> WebhookSettingsOut:
     return WebhookSettingsOut(
         enabled=get_setting(db, "webhook", "enabled", False),

@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
+## [1.4.0] - 2026-11-19
+
+### Added
+- **Special devices** (Settings → Special): pick devices whose every online/offline change is notified on all configured channels (browser toast, MQTT `events/special`, webhook `SPECIAL_DEVICE`, e-mail), also when the device is trusted; optional "notify during quiet hours". A status card lists the special devices with their current state.
+- API: `GET/PUT /api/settings/special`.
+
 ## [1.3.0] - 2026-11-19
 
 ### Added
@@ -105,6 +111,7 @@ First public release.
 - Excel, CSV and PDF export; themes and custom background image.
 - systemd units for deployment in a Proxmox LXC container.
 
+[1.4.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.4.0
 [1.3.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.3.0
 [1.2.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.2.0
 [1.1.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.1.0

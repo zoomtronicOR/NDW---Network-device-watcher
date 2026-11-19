@@ -48,6 +48,14 @@
         timeout: 15000,
       });
       playBeep();
+    } else if (a.event_type === "SPECIAL_DEVICE") {
+      showToast({
+        title: `★ ${a.name || a.mac} je ${a.online ? "ONLINE" : "OFFLINE"}`,
+        lines: [`MAC: ${a.mac}`, `IP: ${a.ip || "-"}`],
+        tone: a.online ? "new" : "bad",
+        timeout: 12000,
+      });
+      playBeep();
     } else if (a.event_type === "IP_CONFLICT") {
       showToast({
         title: "⚠ IP KONFLIKT",

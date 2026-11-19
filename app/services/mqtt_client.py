@@ -214,6 +214,32 @@ class MqttPublisher:
         except Exception:
             logger.exception("MQTT publish_event failed")
 
+    def publish_special(self, mac: str, ip: str | None, extra: dict) -> None:
+        """Special-device notification (Settings -> Special): events/special.
+        The caller already applied the quiet-hours rule; trusted is ignored."""
+        try:
+            client = self._ensure_client()
+            config = self._config
+            if client is None or config is None:
+                db = SessionLocal()
+                try:
+                    enabled = _load_config(db) is not None
+                finally:
+                    db.close()
+                if enabled:
+                    notification_log.record("MQTT", "SPECIAL_DEVICE", mac, "events/special", notification_log.FAILED, "MQTT broker nije dostupan")
+                return
+            topic = f"{config['base_topic']}/events/special"
+            payload = json.dumps({"mac": mac, "ip": ip, "event": "SPECIAL_DEVICE", **extra})
+            info = client.publish(topic, payload, qos=config["qos"], retain=False)
+            ok = info.rc == mqtt.MQTT_ERR_SUCCESS
+            notification_log.record(
+                "MQTT", "SPECIAL_DEVICE", mac, topic,
+                notification_log.SUCCESS if ok else notification_log.FAILED, None if ok else mqtt.error_string(info.rc),
+            )
+        except Exception:
+            logger.exception("MQTT publish_special failed")
+
     def publish_stats(self, stats: dict) -> None:
         try:
             client = self._ensure_client()

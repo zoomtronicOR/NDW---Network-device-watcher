@@ -13,6 +13,7 @@ from app.services.broadcast_client import broadcast_scan_result
 from app.services.detector import DetectionEngine
 from app.services.mqtt_client import mqtt_publisher
 from app.services.name_enricher import NameEnricher
+from app.services.special_devices import notify_special, special_macs
 from app.services.device_classifier import apply_classification
 from app.services.omada_client import apply_omada_clients, fetch_clients, fetch_infra_devices
 from app.services.omada_client import is_configured as omada_is_configured
@@ -47,6 +48,16 @@ def _send_notifications(db, summary) -> None:
     for mac, ip in summary.went_offline:
         mqtt_publisher.publish_event("DEVICE_OFFLINE", mac, ip)
         webhook_publish_event("DEVICE_OFFLINE", mac, ip)
+
+    # Special devices (Settings -> Special): online / offline on every channel.
+    special = special_macs(db)
+    if special:
+        for mac, _ip in summary.new_devices + summary.returned:
+            if mac in special and mac in devices_by_mac:
+                notify_special(db, devices_by_mac[mac], True, mqtt_publisher, webhook_publish_event)
+        for mac, _ip in summary.went_offline:
+            if mac in special and mac in devices_by_mac:
+                notify_special(db, devices_by_mac[mac], False, mqtt_publisher, webhook_publish_event)
 
     # Anomalies (§8.1/8.2) -- same channels, same quiet-hours/trusted gate.
     for mac in summary.vendor_mismatch:

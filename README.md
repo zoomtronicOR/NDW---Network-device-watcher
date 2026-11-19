@@ -1,6 +1,6 @@
 # NDW — Network Device Watcher
 
-![version](https://img.shields.io/badge/version-1.3.0-22d3ee) ![python](https://img.shields.io/badge/python-3.11%2B-3776ab) ![license](https://img.shields.io/badge/license-MIT-34d399)
+![version](https://img.shields.io/badge/version-1.4.0-22d3ee) ![python](https://img.shields.io/badge/python-3.11%2B-3776ab) ![license](https://img.shields.io/badge/license-MIT-34d399)
 
 A self-hosted web application that automatically discovers, records and monitors every device on your local network (LAN and Wi-Fi), tells you the moment something **new** shows up, and pushes events to **Home Assistant (MQTT)**, **e-mail (SMTP)** and **webhooks**.
 

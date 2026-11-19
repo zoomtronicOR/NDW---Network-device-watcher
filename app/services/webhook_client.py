@@ -20,6 +20,7 @@ _WIRED_EVENT_TYPES = {
     "VENDOR_MISMATCH",
     "IP_CONFLICT",
     "SCAN_DETECTED",
+    "SPECIAL_DEVICE",
 }
 
 
@@ -47,14 +48,14 @@ def _post(url: str, headers: dict, payload: dict) -> tuple[bool, str]:
         return False, str(e)
 
 
-def publish_event(event_type: str, mac: str | None, ip: str | None, extra: dict | None = None) -> None:
+def publish_event(event_type: str, mac: str | None, ip: str | None, extra: dict | None = None, force: bool = False) -> None:
     """§18.1. Never raises -- must not block detection (§36)."""
     if event_type not in _WIRED_EVENT_TYPES:
         return
     db = SessionLocal()
     try:
         config = _load_config(db)
-        reason = block_reason(db, mac, event_type) if config is not None else None
+        reason = block_reason(db, mac, event_type) if config is not None and not force else None
     finally:
         db.close()
     if config is None:

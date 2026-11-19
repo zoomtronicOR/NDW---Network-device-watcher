@@ -1127,7 +1127,108 @@ document.getElementById("pg-add-btn").addEventListener("click", async () => {
   }
 });
 
-const SUBTAB_PANELS = ["scanner", "ping", "history", "mqtt", "smtp", "webhook", "omada", "appearance", "backup", "reset"];
+const SUBTAB_PANELS = ["scanner", "ping", "history", "mqtt", "smtp", "webhook", "special", "omada", "appearance", "backup", "reset"];
+
+// ---- Special devices ----
+let spMacs = [];
+let spDeviceIndex = {}; // mac -> device (for names)
+
+function spLabel(mac) {
+  const d = spDeviceIndex[mac];
+  return d ? `${escapeHtml(d.custom_name || d.hostname || d.vendor || "uređaj")} <span class="mono muted">${mac}</span>` : `<span class="mono">${mac}</span> <span class="muted">(nije u bazi)</span>`;
+}
+
+function spRenderList() {
+  const list = document.getElementById("sp-list");
+  list.innerHTML = spMacs.length
+    ? spMacs.map((m) => `<div class="target-row"><span class="lbl">${spLabel(m)}</span><button type="button" class="remove-btn" data-mac="${m}" title="Ukloni">&times;</button></div>`).join("")
+    : '<div class="empty">Nijedan uređaj nije dodat</div>';
+  list.querySelectorAll(".remove-btn").forEach((b) =>
+    b.addEventListener("click", () => {
+      spMacs = spMacs.filter((m) => m !== b.dataset.mac);
+      spRenderList();
+    })
+  );
+}
+
+function spRenderStatus(devices) {
+  const el = document.getElementById("sp-status");
+  if (!devices.length) {
+    el.innerHTML = '<div class="empty">Nema special uređaja</div>';
+    return;
+  }
+  el.innerHTML = devices
+    .map((d) => {
+      const state = d.is_online == null ? '<span class="muted">nepoznat</span>' : `<span class="status-badge ${d.is_online ? "ok" : "bad"}">${d.is_online ? "ONLINE" : "OFFLINE"}</span>`;
+      return `<a class="sp-row" ${d.id ? `href="/devices.html?device=${d.id}"` : ""}>
+        <span class="type-cell">${deviceTypeIcon(d.device_type)}<span>${escapeHtml(d.name || d.mac)}</span></span>
+        <span class="muted mono">${escapeHtml(d.ip || "-")}</span>
+        ${state}
+        <span class="muted">${d.last_seen ? timeAgo(d.last_seen) : "-"}</span>
+      </a>`;
+    })
+    .join("");
+}
+
+function spResolveInput(text) {
+  const v = text.trim();
+  const m = v.match(/([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}/);
+  if (m) return m[0].replace(/-/g, ":").toUpperCase();
+  const hit = Object.values(spDeviceIndex).find((d) => [d.custom_name, d.hostname].some((n) => n && n.toLowerCase() === v.toLowerCase()));
+  return hit ? hit.mac_address : null;
+}
+
+async function loadSpecialSettings() {
+  try {
+    const [s, devs] = await Promise.all([Api.getSpecialSettings(), Api.listDevices({ page_size: 200, sort: "custom_name", order: "asc" })]);
+    spDeviceIndex = {};
+    devs.items.forEach((d) => (spDeviceIndex[d.mac_address] = d));
+    document.getElementById("sp-device-list").innerHTML = devs.items
+      .map((d) => `<option value="${escapeHtml(`${d.custom_name || d.hostname || d.vendor || "uređaj"} - ${d.mac_address}`)}"></option>`)
+      .join("");
+    spMacs = s.macs;
+    document.getElementById("sp-ignore-quiet").checked = s.ignore_quiet_hours;
+    spRenderList();
+    spRenderStatus(s.devices);
+  } catch (err) {
+    console.error("loadSpecialSettings failed", err);
+  }
+}
+
+document.getElementById("sp-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("sp-add-input");
+  const mac = spResolveInput(input.value);
+  if (!mac) {
+    setResult("sp-result", false, "Izaberi uređaj sa liste ili upiši ispravnu MAC adresu.");
+    return;
+  }
+  if (!spMacs.includes(mac)) spMacs.push(mac);
+  input.value = "";
+  setResult("sp-result", true, "Dodato - klikni Sačuvaj podešavanja.");
+  spRenderList();
+});
+
+document.getElementById("sp-save-btn").addEventListener("click", async () => {
+  try {
+    const s = await Api.updateSpecialSettings({ macs: spMacs, ignore_quiet_hours: document.getElementById("sp-ignore-quiet").checked });
+    spMacs = s.macs;
+    spRenderList();
+    spRenderStatus(s.devices);
+    setResult("sp-result", true, "Sačuvano.");
+  } catch (err) {
+    setResult("sp-result", false, err.message || "Greška pri čuvanju.");
+  }
+});
+
+loadSpecialSettings();
+setInterval(async () => {
+  if (document.getElementById("panel-special").style.display === "none") return;
+  try {
+    spRenderStatus((await Api.getSpecialSettings()).devices);
+  } catch (e) {
+    /* ignore */
+  }
+}, 15000);
 
 // Quiet hours only applies to MQTT/SMTP -- shown directly below whichever of those
 // two panels is active (not pinned at the top), by physically re-parenting the
