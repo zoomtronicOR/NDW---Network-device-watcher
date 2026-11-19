@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import ipaddress
 import re
+from dataclasses import asdict
 from datetime import datetime, timezone
 from datetime import time as dt_time
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
 from pydantic import BaseModel
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
@@ -43,7 +44,16 @@ from app.schemas.settings import (
 )
 from app.services.background_storage import InvalidImageError, delete_background, save_background
 from app.services.crypto import encrypt
+from app.services.device_backup import (
+    BackupFormatError,
+    apply_import,
+    build_devices_csv,
+    build_devices_xlsx,
+    parse_backup,
+    plan_import,
+)
 from app.services.mqtt_client import test_connection as test_mqtt_connection
+from app.services.pdf_report import build_pdf_report
 from app.services.omada_client import list_sites_for_settings, test_connection as test_omada_connection
 from app.services.retention import cleanup_history, cleanup_ping_results
 from app.services.settings_store import get_setting, set_setting
@@ -531,6 +541,72 @@ def import_config(payload: ConfigExportOut, db: Session = Depends(get_db)) -> Co
         count += 1
     db.commit()
     return ConfigImportResult(imported=count)
+
+
+_DEVICE_BACKUP_MAX_BYTES = 20 * 1024 * 1024
+DEVICE_IMPORT_CONFIRM = "IMPORT"
+
+
+@router.get("/settings/devices-backup/export")
+def export_devices_backup(format: str = "xlsx", db: Session = Depends(get_db)) -> Response:
+    devices = db.execute(select(Device).order_by(Device.mac_address)).scalars().all()
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    if format == "xlsx":
+        content, media = build_devices_xlsx(devices), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    elif format == "csv":
+        content, media = build_devices_csv(devices), "text/csv"
+    elif format == "pdf":
+        content, media = build_pdf_report(devices), "application/pdf"
+    else:
+        raise HTTPException(status_code=400, detail="Format mora biti xlsx, csv ili pdf.")
+    return Response(
+        content=content,
+        media_type=media,
+        headers={"Content-Disposition": f'attachment; filename="networkwatcher-devices-backup-{stamp}.{format}"'},
+    )
+
+
+async def _parse_device_upload(file: UploadFile):
+    raw = await file.read()
+    if len(raw) > _DEVICE_BACKUP_MAX_BYTES:
+        raise HTTPException(status_code=400, detail="Fajl je prevelik (max 20 MB).")
+    try:
+        return parse_backup(file.filename or "", raw)
+    except BackupFormatError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+
+
+@router.post("/settings/devices-backup/preview")
+async def preview_devices_import(
+    file: UploadFile = File(...), mode: str = Form("merge"), db: Session = Depends(get_db)
+) -> dict:
+    parsed = await _parse_device_upload(file)
+    try:
+        return asdict(plan_import(db, parsed, mode))
+    except BackupFormatError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+
+
+@router.post("/settings/devices-backup/import")
+async def import_devices_backup(
+    file: UploadFile = File(...),
+    mode: str = Form("merge"),
+    confirm: str = Form(""),
+    db: Session = Depends(get_db),
+) -> dict:
+    parsed = await _parse_device_upload(file)
+    try:
+        plan = plan_import(db, parsed, mode)
+    except BackupFormatError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+    if not parsed.rows:
+        raise HTTPException(status_code=400, detail="Fajl ne sadrži nijedan ispravan uređaj.")
+    if plan.destructive and confirm.strip() != DEVICE_IMPORT_CONFIRM:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Uvoz menja ili briše postojeće podatke - potrebna je potvrda '{DEVICE_IMPORT_CONFIRM}'.",
+        )
+    return asdict(apply_import(db, parsed, mode))
 
 
 def _read_appearance_settings(db: Session) -> AppearanceSettingsOut:

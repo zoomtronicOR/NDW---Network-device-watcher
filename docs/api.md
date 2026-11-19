@@ -79,6 +79,9 @@ Each group has `GET` (current values, secrets reported only as `password_set` / 
 | GET | `/api/settings/omada/sites` | Sites available on the controller |
 | GET | `/api/settings/backup/export` | All settings as JSON (secrets stay encrypted) |
 | POST | `/api/settings/backup/import` | Import that JSON |
+| GET | `/api/settings/devices-backup/export?format=xlsx\|csv\|pdf` | Device inventory only (no events, statistics or ping results); XLSX/CSV use raw column names and can be re-imported, PDF is a read-only report |
+| POST | `/api/settings/devices-backup/preview` | Multipart `file` (.xlsx/.csv) + `mode` (`merge`/`replace`); returns what the import would do (new/updated/unchanged/deleted devices, invalid rows) without changing anything |
+| POST | `/api/settings/devices-backup/import` | Same fields + `confirm`; when the import updates or deletes existing data, `confirm` must be `IMPORT` or the request is rejected (400) |
 | POST / DELETE | `/api/settings/appearance/background` | Upload (multipart `file`) / remove the background image |
 | DELETE | `/api/settings/reset/devices` | Delete all devices and their history |
 

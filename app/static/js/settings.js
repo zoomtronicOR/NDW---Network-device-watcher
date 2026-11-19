@@ -663,6 +663,106 @@ document.getElementById("bk-import-btn").addEventListener("click", async () => {
   }
 });
 
+// --- Device database export/import ---
+
+const dbExportFormat = document.getElementById("db-export-format");
+dbExportFormat.addEventListener("change", () => {
+  document.getElementById("db-export-btn").href = `/api/settings/devices-backup/export?format=${dbExportFormat.value}`;
+});
+
+let dbPlan = null;
+
+function dbResetPreview() {
+  dbPlan = null;
+  document.getElementById("db-preview").hidden = true;
+  document.getElementById("db-confirm-input").value = "";
+}
+
+function dbUpdateImportBtn() {
+  const btn = document.getElementById("db-import-btn");
+  const ok = !!dbPlan && dbPlan.to_create + dbPlan.to_update + dbPlan.to_delete > 0;
+  const confirmed = !dbPlan?.destructive || document.getElementById("db-confirm-input").value.trim() === "IMPORT";
+  btn.disabled = !(ok && confirmed);
+  btn.className = dbPlan?.destructive ? "btn btn-danger" : "btn btn-primary";
+}
+
+function dbRenderPreview(plan) {
+  const lines = [
+    `Ispravnih redova: <strong>${plan.total_rows - plan.invalid_rows}</strong> od ${plan.total_rows}`,
+    `Novi uređaji: <strong>${plan.to_create}</strong>`,
+  ];
+  if (plan.mode === "merge") {
+    lines.push(`Postojeći uređaji koji se menjaju: <strong>${plan.to_update}</strong>`);
+    lines.push(`Bez promene: ${plan.unchanged}`);
+  } else {
+    lines.push(`<span style="color:var(--bad)">Brišu se svi postojeći uređaji: <strong>${plan.to_delete}</strong> (i ${plan.events_lost} događaja istorije)</span>`);
+  }
+  lines.push(`<span class="muted">Kolone u fajlu: ${plan.columns.map(escapeHtml).join(", ")}</span>`);
+  if (plan.invalid_rows) {
+    lines.push(`<span style="color:var(--warn)">Preskočeno neispravnih redova: ${plan.invalid_rows}</span>`);
+    lines.push(...plan.errors.map((e) => `<span class="muted">- ${escapeHtml(e)}</span>`));
+  }
+  document.getElementById("db-preview-summary").innerHTML = lines.join("<br>");
+  const warn = plan.mode === "replace"
+    ? `Svi postojeći uređaji (${plan.to_delete}) i njihova istorija biće trajno obrisani.`
+    : `${plan.to_update} postojećih uređaja biće prepisano vrednostima iz fajla.`;
+  document.getElementById("db-confirm-warning").textContent = `${warn} Ova akcija se ne može poništiti.`;
+  document.getElementById("db-confirm-wrap").hidden = !plan.destructive;
+  document.getElementById("db-preview").hidden = false;
+  dbUpdateImportBtn();
+}
+
+document.getElementById("db-import-file").addEventListener("change", dbResetPreview);
+document.getElementById("db-import-mode").addEventListener("change", dbResetPreview);
+document.getElementById("db-confirm-input").addEventListener("input", dbUpdateImportBtn);
+
+document.getElementById("db-preview-btn").addEventListener("click", async () => {
+  const file = document.getElementById("db-import-file").files[0];
+  dbResetPreview();
+  if (!file) {
+    setResult("db-result", false, "Izaberi .xlsx ili .csv fajl za uvoz.");
+    return;
+  }
+  const btn = document.getElementById("db-preview-btn");
+  btn.disabled = true;
+  btn.textContent = "Provera...";
+  try {
+    dbPlan = await Api.previewDeviceImport(file, document.getElementById("db-import-mode").value);
+    setResult("db-result", true, "");
+    dbRenderPreview(dbPlan);
+  } catch (err) {
+    console.error("previewDeviceImport failed", err);
+    setResult("db-result", false, err.message || "Greška pri proveri fajla.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Proveri fajl";
+  }
+});
+
+document.getElementById("db-import-btn").addEventListener("click", async () => {
+  const file = document.getElementById("db-import-file").files[0];
+  if (!file || !dbPlan) return;
+  const btn = document.getElementById("db-import-btn");
+  btn.disabled = true;
+  btn.textContent = "Uvoženje...";
+  try {
+    const r = await Api.importDevices(file, dbPlan.mode, document.getElementById("db-confirm-input").value.trim());
+    const parts = [`dodato ${r.to_create}`];
+    if (r.mode === "merge") parts.push(`ažurirano ${r.to_update}`);
+    else parts.push(`obrisano ${r.to_delete}`);
+    if (r.invalid_rows) parts.push(`preskočeno ${r.invalid_rows}`);
+    setResult("db-result", true, `Uvoz završen: ${parts.join(", ")}.`);
+    document.getElementById("db-import-file").value = "";
+    dbResetPreview();
+  } catch (err) {
+    console.error("importDevices failed", err);
+    setResult("db-result", false, err.message || "Greška pri uvozu.");
+    dbUpdateImportBtn();
+  } finally {
+    btn.textContent = "Uvezi uređaje";
+  }
+});
+
 // --- Appearance ---
 
 let savedAppearance = null;

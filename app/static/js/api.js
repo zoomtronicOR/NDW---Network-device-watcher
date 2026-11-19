@@ -55,6 +55,25 @@ const Api = {
   importConfig: (payload) => Api._send("POST", "/api/settings/backup/import", payload),
   getAppearanceSettings: () => Api._get("/api/settings/appearance"),
   updateAppearanceSettings: (payload) => Api._send("PUT", "/api/settings/appearance", payload),
+  async _postForm(path, fields) {
+    const formData = new FormData();
+    Object.entries(fields).forEach(([k, v]) => formData.append(k, v));
+    const res = await fetch(path, { method: "POST", body: formData });
+    if (!res.ok) {
+      let detail = `HTTP ${res.status}`;
+      try {
+        const errBody = await res.json();
+        if (errBody && errBody.detail) detail = errBody.detail;
+      } catch (e) {
+        /* body wasn't JSON */
+      }
+      throw new Error(detail);
+    }
+    return res.json();
+  },
+  previewDeviceImport: (file, mode) => Api._postForm("/api/settings/devices-backup/preview", { file, mode }),
+  importDevices: (file, mode, confirm) =>
+    Api._postForm("/api/settings/devices-backup/import", { file, mode, confirm }),
   async uploadBackground(file) {
     const formData = new FormData();
     formData.append("file", file);

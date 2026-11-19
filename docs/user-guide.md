@@ -96,7 +96,7 @@ Settings are grouped in sub-tabs; each has a *Kako podesiti* (how to configure) 
 - **Special** - devices you want to hear about every time they come online or go offline (add from the list or by MAC). Notifications go to all configured channels, also for trusted devices; *Obaveštavaj i tokom tihe zone* makes them ignore quiet hours. The card under the help card shows the current state of each special device.
 - **Omada** — controller connection; *Testiraj konekciju*, *Učitaj lokacije* (load sites), then pick and save a site.
 - **Izgled** (appearance) — theme, custom colors, card style (solid / transparent / glass), opacity, blur, border radius, background image (JPG/PNG/WEBP up to 8 MB) with opacity, blur, brightness, saturation, overlay, position, size and repeat.
-- **Backup** — *Export configuration* downloads all settings as JSON; *Import configuration* restores them.
+- **Backup** — *Export configuration* downloads all settings as JSON; *Import configuration* restores them. *Export / import baze uređaja* exports the device inventory (no history, statistics or ping results) as Excel, CSV or PDF and imports Excel/CSV back (the plain Devices-page export is accepted too). *Proveri fajl* previews the result first; *Spoji* (merge) adds new devices and updates existing ones by MAC, *Zameni* (replace) deletes all devices and their history first. Any import that changes or deletes existing data must be confirmed by typing `IMPORT`. Imported devices start OFFLINE until the scanner sees them.
 - **Reset** — deletes all devices and their history (type `RESET` to enable the button). Settings are kept.
 
 Passwords and secrets are never shown again after saving; leave the field empty to keep the stored value.

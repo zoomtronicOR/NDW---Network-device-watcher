@@ -142,6 +142,8 @@
     <div class="help-note">Napomena: koristi se ARP/neighbor-table detekcija, ne klasičan ping - zato je "Probe timeout" vreme čekanja da se ARP odgovori slegnu.</div>
   </div>
 
+  <div class="row-break"></div>
+
   <div class="panel" style="max-width:640px">
     <h2>Detekcija skeniranja mreže i IP konflikta</h2>
     <div id="sd-status" class="sd-status"></div>
@@ -794,7 +796,8 @@
   </div>
 
   <div class="settings-row" id="panel-backup" style="display:none">
-  <div class="panel" style="max-width:640px">
+  <div style="flex:0 1 640px;min-width:0;display:flex;flex-direction:column;gap:16px">
+  <div class="panel">
     <h2>Backup / Restore</h2>
     <div style="font-size:11px;color:var(--text-faint);margin-bottom:16px">
       Izvoz/uvoz podešavanja aplikacije (SMTP/MQTT/Scanner/Webhook). Lozinke ostaju šifrovane u fajlu.
@@ -814,13 +817,73 @@
     <div id="bk-result" style="margin-top:14px;font-size:12.5px"></div>
   </div>
 
+  <div class="panel">
+    <h2>Export / import baze uređaja</h2>
+    <div style="font-size:11px;color:var(--text-faint);margin-bottom:16px">
+      Samo lista uređaja (MAC, IP, nazivi, tipovi, beleške, poverljiv status...) - bez istorije događaja, statistike i rezultata merenja.
+    </div>
+
+    <div class="edit-form" style="grid-template-columns:1fr auto;align-items:end">
+      <div>
+        <label>Format izvoza</label>
+        <select id="db-export-format" style="width:100%">
+          <option value="xlsx">Excel (.xlsx)</option>
+          <option value="csv">CSV (.csv)</option>
+          <option value="pdf">PDF (.pdf) - samo za pregled, ne može se uvesti</option>
+        </select>
+      </div>
+      <div>
+        <a class="btn btn-primary" id="db-export-btn" href="/api/settings/devices-backup/export?format=xlsx">Izvezi uređaje</a>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--card-border);margin:20px 0 16px"></div>
+
+    <div class="edit-form" style="grid-template-columns:1fr 1fr">
+      <div class="full">
+        <label>Fajl za uvoz (.xlsx ili .csv)</label>
+        <input type="file" id="db-import-file" accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+      </div>
+      <div class="full">
+        <label>Režim uvoza</label>
+        <select id="db-import-mode" style="width:100%">
+          <option value="merge">Spoji - dodaj nove, ažuriraj postojeće po MAC adresi</option>
+          <option value="replace">Zameni - obriši SVE postojeće uređaje i istoriju, pa uvezi</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <span></span>
+      <button class="btn" id="db-preview-btn">Proveri fajl</button>
+    </div>
+
+    <div id="db-preview" hidden style="margin-top:14px">
+      <div id="db-preview-summary" style="font-size:12.5px;line-height:1.7"></div>
+      <div id="db-confirm-wrap" hidden style="margin-top:12px">
+        <div style="font-size:12.5px;color:var(--bad);font-weight:600;margin-bottom:8px" id="db-confirm-warning"></div>
+        <label style="display:block;font-size:11px;color:var(--text-faint);margin-bottom:6px">Upiši <strong>IMPORT</strong> da potvrdiš</label>
+        <input type="text" id="db-confirm-input" placeholder="IMPORT" style="width:100%" autocomplete="off" />
+      </div>
+      <div class="modal-actions">
+        <span></span>
+        <button class="btn btn-primary" id="db-import-btn">Uvezi uređaje</button>
+      </div>
+    </div>
+
+    <div id="db-result" style="margin-top:14px;font-size:12.5px"></div>
+  </div>
+  </div>
+
   <div class="panel help-card">
     <h2>Kako podesiti</h2>
     <ol>
       <li><strong>Export</strong> preuzima sva podešavanja (SMTP/MQTT/Scanner/Webhook/Omada/Izgled) kao JSON fajl. Lozinke/Secret-i ostaju šifrovani u fajlu.</li>
       <li><strong>Import</strong> učitava taj isti fajl nazad - koristi za brzo prenošenje podešavanja na drugi kontejner.</li>
+      <li><strong>Baza uređaja</strong> - izvoz liste uređaja u Excel, CSV ili PDF. Excel/CSV se mogu uvesti nazad (prihvata se i obični izvoz sa stranice Uređaji).</li>
+      <li><strong>Proveri fajl</strong> prikazuje šta će uvoz uraditi (novi/izmenjeni/obrisani uređaji) pre bilo kakve promene. Ako uvoz menja ili briše postojeće podatke, traži se potvrda <code>IMPORT</code>.</li>
+      <li><strong>Spoji</strong> dodaje nove i ažurira postojeće uređaje; <strong>Zameni</strong> prvo briše sve uređaje i njihovu istoriju.</li>
     </ol>
-    <div class="help-note">Backup ne uključuje listu uređaja/istoriju - samo podešavanja aplikacije.</div>
+    <div class="help-note">Konfiguracioni backup ne uključuje uređaje; backup baze uređaja ne uključuje istoriju, statistiku ni ping merenja. Uvezeni uređaji kreću kao OFFLINE dok ih scanner ponovo ne vidi.</div>
   </div>
   </div>
 

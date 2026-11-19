@@ -12,6 +12,7 @@ function gaugeBar(pct) {
   return `
     <div class="tel-gauge-track">
       <div class="tel-gauge-fill" style="width:${clamped}%;background:${gaugeColor(clamped)}"></div>
+      <span class="tel-gauge-label">${(pct || 0).toFixed(0)}%</span>
     </div>
   `;
 }
@@ -29,7 +30,6 @@ function renderCores(perCore) {
       <div class="tel-core-row">
         <span class="tel-core-label">CPU${i}</span>
         ${gaugeBar(pct)}
-        <span class="tel-core-value">${pct.toFixed(0)}%</span>
       </div>
     `
     )

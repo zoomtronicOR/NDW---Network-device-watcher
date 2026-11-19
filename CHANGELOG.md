@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
+## [1.5.0] - 2026-11-19
+
+### Added
+- Settings → Backup: **device database export/import**. Export the device inventory (no events, statistics or ping results) as XLSX, CSV or PDF; import XLSX/CSV back in *merge* or *replace* mode. A preview shows new/updated/deleted devices and invalid rows before anything changes; imports that modify or delete existing data require typing `IMPORT` (enforced server-side).
+- API: `GET /api/settings/devices-backup/export`, `POST /api/settings/devices-backup/preview`, `POST /api/settings/devices-backup/import`.
+
+### Changed
+- Telemetry: progress bars show their percentage inside the bar.
+- Settings → Scanner: the network-scan / IP-conflict card always sits directly below the Scanner card (with its help card to the right), also on wide screens.
+
 ## [1.4.0] - 2026-11-19
 
 ### Added
@@ -111,6 +121,7 @@ First public release.
 - Excel, CSV and PDF export; themes and custom background image.
 - systemd units for deployment in a Proxmox LXC container.
 
+[1.5.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.5.0
 [1.4.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.4.0
 [1.3.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.3.0
 [1.2.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.2.0

@@ -179,6 +179,8 @@ Read [CHANGELOG.md](../CHANGELOG.md) before upgrading. The current version is sh
 
 **Settings only** — *Podešavanja → Backup → Export configuration* downloads a JSON file with every setting. Secret values are included in encrypted form, so importing them only works on an installation with the same `SECRET_KEY`.
 
+**Device inventory only** — *Podešavanja → Backup → Export / import baze uređaja* exports the devices (no history, statistics or ping results) as XLSX, CSV or PDF and imports XLSX/CSV back, in *merge* or *replace* mode. A preview is shown first, and imports that change or delete existing data must be confirmed by typing `IMPORT`.
+
 **Everything** (devices, history, settings):
 
 ```bash
