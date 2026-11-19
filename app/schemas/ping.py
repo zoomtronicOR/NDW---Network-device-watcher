@@ -12,6 +12,7 @@ class PingTargetOut(BaseModel):
     address: str
     label: str | None
     enabled: bool
+    sort_order: int = 0
     created_at: datetime
 
 
@@ -21,6 +22,7 @@ class PingTargetCreate(BaseModel):
 
 
 class PingTargetUpdate(BaseModel):
+    address: str | None = None
     label: str | None = None
     enabled: bool | None = None
 
@@ -44,6 +46,10 @@ class PingSeriesOut(BaseModel):
     target: PingTargetOut
     latest: PingResultOut | None
     history: list[PingResultOut]
+
+
+class PingTargetOrder(BaseModel):
+    ids: list[int]
 
 
 class ColorBand(BaseModel):

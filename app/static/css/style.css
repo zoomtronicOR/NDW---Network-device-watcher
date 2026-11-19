@@ -2279,3 +2279,64 @@ a.stat-link:hover {
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
+
+/* ---------- settings: ping destinations (reorder / edit) ---------- */
+
+.target-row .drag-handle {
+  cursor: grab;
+  color: var(--text-faint);
+  font-size: 14px;
+  user-select: none;
+}
+
+.target-row.dragging {
+  opacity: 0.45;
+}
+
+.target-row.drop-before {
+  box-shadow: 0 -2px 0 0 var(--primary);
+}
+
+.target-row.drop-after {
+  box-shadow: 0 2px 0 0 var(--primary);
+}
+
+.target-row .order-btns {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.icon-btn:hover:not(:disabled) {
+  color: var(--primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.icon-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.target-row .pg-edit {
+  font-size: 14px;
+}
+
+.target-row.editing {
+  flex-wrap: wrap;
+}
+
+.target-row.editing input[type="text"] {
+  flex: 1 1 160px;
+  min-width: 0;
+}

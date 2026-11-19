@@ -46,7 +46,7 @@
   <div class="panel" id="panel-quiet-hours" style="max-width:640px;margin-top:16px;margin-bottom:16px">
     <h2>Tiha zona (Quiet Hours)</h2>
     <div style="font-size:11px;color:var(--text-faint);margin-bottom:12px">
-      Utiče na SMTP i MQTT obaveštenja — događaji se i dalje evidentiraju, samo se ne šalju eksterna obaveštenja u ovom periodu.
+      Utiče na SMTP i MQTT obaveštenja - događaji se i dalje evidentiraju, samo se ne šalju eksterna obaveštenja u ovom periodu.
     </div>
     <div class="edit-form">
       <div class="full">
@@ -132,13 +132,13 @@
   <div class="panel help-card">
     <h2>Kako podesiti</h2>
     <ol>
-      <li><strong>Scan interval</strong> — koliko često se mreža skenira. 30s je dobar balans; nema potrebe za agresivnim skeniranjem.</li>
-      <li><strong>Offline threshold</strong> — koliko uzastopnih promašaja mora da prođe pre nego što uređaj postane OFFLINE (sprečava lažne alarme).</li>
-      <li><strong>Minimalna odsutnost</strong> — uređaj postaje OFFLINE tek kad su ispunjena <em>oba</em> uslova: dovoljno promašaja i nije viđen bar ovoliko sekundi. Telefoni i IoT uređaji (Tuya, ESP) u štednji energije po minut-dva ne odgovaraju na ARP; 300s (5 min) uklanja većinu lažnih OFFLINE/VRAĆEN parova. Ako je Omada uključena, Wi-Fi uređaj koji je i dalje povezan na AP uvek se računa kao prisutan.</li>
-      <li><strong>Interfejs</strong> — ostavi prazno da aplikacija sama izabere; upiši npr. <code>eth0</code> samo ako imaš više mrežnih kartica.</li>
-      <li><strong>Mrežni opsezi</strong> — jedan CIDR po liniji, npr. <code>192.168.1.0/24</code>. Podržano je više opsega odjednom.</li>
+      <li><strong>Scan interval</strong> - koliko često se mreža skenira. 30s je dobar balans; nema potrebe za agresivnim skeniranjem.</li>
+      <li><strong>Offline threshold</strong> - koliko uzastopnih promašaja mora da prođe pre nego što uređaj postane OFFLINE (sprečava lažne alarme).</li>
+      <li><strong>Minimalna odsutnost</strong> - uređaj postaje OFFLINE tek kad su ispunjena <em>oba</em> uslova: dovoljno promašaja i nije viđen bar ovoliko sekundi. Telefoni i IoT uređaji (Tuya, ESP) u štednji energije po minut-dva ne odgovaraju na ARP; 300s (5 min) uklanja većinu lažnih OFFLINE/VRAĆEN parova. Ako je Omada uključena, Wi-Fi uređaj koji je i dalje povezan na AP uvek se računa kao prisutan.</li>
+      <li><strong>Interfejs</strong> - ostavi prazno da aplikacija sama izabere; upiši npr. <code>eth0</code> samo ako imaš više mrežnih kartica.</li>
+      <li><strong>Mrežni opsezi</strong> - jedan CIDR po liniji, npr. <code>192.168.1.0/24</code>. Podržano je više opsega odjednom.</li>
     </ol>
-    <div class="help-note">Napomena: koristi se ARP/neighbor-table detekcija, ne klasičan ping — zato je "Probe timeout" vreme čekanja da se ARP odgovori slegnu.</div>
+    <div class="help-note">Napomena: koristi se ARP/neighbor-table detekcija, ne klasičan ping - zato je "Probe timeout" vreme čekanja da se ARP odgovori slegnu.</div>
   </div>
 
   <div class="panel" style="max-width:640px">
@@ -169,7 +169,7 @@
         <input type="text" id="sd-cooldown" placeholder="600" />
       </div>
       <div class="full">
-        <label>Poznati skeneri — MAC adrese, jedna po liniji (npr. Watch Your LAN, Home Assistant)</label>
+        <label>Poznati skeneri - MAC adrese, jedna po liniji (npr. Watch Your LAN, Home Assistant)</label>
         <textarea id="sd-ignore" rows="3" class="mono-textarea" placeholder="AA:BB:CC:DD:EE:FF"></textarea>
         <div class="field-hint">Njihovo <em>uobičajeno</em> skeniranje se ne prijavljuje. Aplikacija 6 sati uči kako se svaki ponaša, a posle toga upozorava ako počne da skenira znatno češće, obuhvati znatno više adresa ili se javi sa nove IP adrese (moguće lažno predstavljanje tuđim MAC-om).</div>
       </div>
@@ -188,8 +188,8 @@
     <ol>
       <li>Poseban servis <code>networkwatcher-sniffer</code> pasivno sluša <strong>samo ARP</strong> saobraćaj (ništa ne šalje i ne gleda drugi saobraćaj). Samo on ima <code>CAP_NET_RAW</code> privilegiju; scanner i web rade bez nje.</li>
       <li><strong>Skeniranje</strong>: ako jedan uređaj u zadatom prozoru pita za više različitih adresa od praga (npr. <code>nmap -sn</code>, <code>arp-scan</code>, Watch Your LAN, Fing), beleži se <em>SKENIRANJE MREŽE</em> sa izvorom i brojem adresa.</li>
-      <li><strong>IP konflikt</strong>: dve različite MAC adrese u okviru prozora (podrazumevano 10 min) koriste istu IP adresu — vidi se i iz ARP saobraćaja i iz skenera (IP „preskače“ sa jednog uređaja na drugi). DHCP ne dodeljuje adresu koja je još u zakupu, pa je to gotovo uvek ručno (statički) podešena adresa. Konflikt koji traje prijavljuje se ponovo posle pauze, pa ostaje „aktivan“ na dashboardu dok se ne reši.</li>
-      <li><strong>Poznati skeneri</strong>: uređaji koje znaš i kojima je skeniranje posao (Watch Your LAN, Home Assistant, Fing...). Ne prijavljuju se dok rade kao i obično; prijavljuju se samo kad počnu da se ponašaju čudno. Svi ostali — nepoznati, ali i tvoji poznati uređaji koji inače ne skeniraju — prijavljuju se čim pređu prag.</li>
+      <li><strong>IP konflikt</strong>: dve različite MAC adrese u okviru prozora (podrazumevano 10 min) koriste istu IP adresu - vidi se i iz ARP saobraćaja i iz skenera (IP „preskače“ sa jednog uređaja na drugi). DHCP ne dodeljuje adresu koja je još u zakupu, pa je to gotovo uvek ručno (statički) podešena adresa. Konflikt koji traje prijavljuje se ponovo posle pauze, pa ostaje „aktivan“ na dashboardu dok se ne reši.</li>
+      <li><strong>Poznati skeneri</strong>: uređaji koje znaš i kojima je skeniranje posao (Watch Your LAN, Home Assistant, Fing...). Ne prijavljuju se dok rade kao i obično; prijavljuju se samo kad počnu da se ponašaju čudno. Svi ostali - nepoznati, ali i tvoji poznati uređaji koji inače ne skeniraju - prijavljuju se čim pređu prag.</li>
       <li><strong>Pauza</strong> sprečava da skener koji radi stalno (npr. na svakih par minuta) napravi stotine istih upozorenja.</li>
       <li>Ograničenje: vidi se samo ARP (host discovery u istom segmentu). Port-scan jednog hosta (SYN scan) zahteva IDS (Suricata/Zeek)</li>
     </ol>
@@ -266,9 +266,10 @@
   <div class="panel help-card">
     <h2>Kako podesiti</h2>
     <ol>
-      <li>Unesi <strong>IP adresu ili hostname</strong> (npr. <code>8.8.8.8</code>, <code>192.168.1.1</code> ili neki sajt) i klikni "+ Dodaj destinaciju" — može ih biti više.</li>
+      <li>Unesi <strong>IP adresu ili hostname</strong> (npr. <code>8.8.8.8</code>, <code>192.168.1.1</code> ili neki sajt) i klikni "+ Dodaj destinaciju" - može ih biti više.</li>
       <li><strong>Ping interval</strong> određuje koliko često se sve aktivne destinacije pingaju, i koliko često se Ping tab osvežava.</li>
-      <li><strong>Boje za RTT</strong> — podesi granice (u ms) za zeleno/žuto/narandžasto; sve preko poslednje granice, i svaka nedostupna destinacija, prikazuje se poslednjom (crvenom) bojom.</li>
+      <li><strong>Boje za RTT</strong> - podesi granice (u ms) za zeleno/žuto/narandžasto; sve preko poslednje granice, i svaka nedostupna destinacija, prikazuje se poslednjom (crvenom) bojom.</li>
+      <li>Redosled menjaš prevlačenjem za ručicu (&#10303;) ili strelicama; isti redosled važi i na Ping stranici. Dugme &#9998; menja adresu i naziv (promena adrese briše dosadašnju statistiku te destinacije).</li>
       <li>Svaku destinaciju možeš privremeno isključiti (checkbox "aktivan") bez brisanja istorije, ili je trajno ukloniti (✕).</li>
     </ol>
   </div>
@@ -334,9 +335,9 @@
   <div class="panel help-card">
     <h2>Kako podesiti</h2>
     <ol>
-      <li><strong>Čuvanje istorije</strong> — koliko dugo se čuvaju detaljni događaji, istorija IP adresa i log obaveštenja (koristi ih i Network Time Machine). Osnovni podaci o uređaju (prvi/poslednji put viđen, broj pojavljivanja) čuvaju se trajno, bez obzira na ovo podešavanje.</li>
-      <li><strong>Čuvanje ping statistike</strong> — koliko dugo se čuvaju pojedinačna ping merenja (grafikoni na Ping tabu). Pošto se meri na svakih par sekundi, ova tabela raste mnogo brže od istorije uređaja. Ping tab prikazuje najviše 10 dana, pa je 10 dana preporučena vrednost.</li>
-      <li><strong>Neograničeno</strong> — ništa se automatski ne briše.</li>
+      <li><strong>Čuvanje istorije</strong> - koliko dugo se čuvaju detaljni događaji, istorija IP adresa i log obaveštenja (koristi ih i Network Time Machine). Osnovni podaci o uređaju (prvi/poslednji put viđen, broj pojavljivanja) čuvaju se trajno, bez obzira na ovo podešavanje.</li>
+      <li><strong>Čuvanje ping statistike</strong> - koliko dugo se čuvaju pojedinačna ping merenja (grafikoni na Ping tabu). Pošto se meri na svakih par sekundi, ova tabela raste mnogo brže od istorije uređaja. Ping tab prikazuje najviše 10 dana, pa je 10 dana preporučena vrednost.</li>
+      <li><strong>Neograničeno</strong> - ništa se automatski ne briše.</li>
       <li>Čišćenje se automatski pokreće jednom na sat u pozadini (<code>networkwatcher-worker</code> servis); dugme "Pokreni čišćenje sada" ga pokreće odmah, korisno za trenutnu proveru.</li>
     </ol>
   </div>
@@ -418,8 +419,8 @@
   <div class="panel help-card">
     <h2>Kako podesiti</h2>
     <ol>
-      <li><strong>Broker host/port</strong> — adresa tvog MQTT brokera (npr. Mosquitto add-on u Home Assistant-u je obično na istoj IP adresi kao HA, port <code>1883</code>).</li>
-      <li><strong>Username/Password</strong> — ostavi prazno ako broker dozvoljava anonimne konekcije.</li>
+      <li><strong>Broker host/port</strong> - adresa tvog MQTT brokera (npr. Mosquitto add-on u Home Assistant-u je obično na istoj IP adresi kao HA, port <code>1883</code>).</li>
+      <li><strong>Username/Password</strong> - ostavi prazno ako broker dozvoljava anonimne konekcije.</li>
       <li>Klikni <strong>"Test MQTT"</strong> da odmah proveriš konekciju pre čuvanja.</li>
       <li>Uključi <strong>Home Assistant Discovery</strong> da senzori (ukupno/online/Wi-Fi/LAN uređaja) automatski budu prepoznati u Home Assistant-u, bez ručnog dodavanja.</li>
     </ol>
@@ -487,11 +488,11 @@
   </div>
 
   <div class="panel help-card">
-    <h2>Primer — Gmail</h2>
+    <h2>Primer - Gmail</h2>
     <ol>
       <li>SMTP server: <code>smtp.gmail.com</code>, Port: <code>587</code>, Sigurnost: <strong>STARTTLS</strong>.</li>
       <li>Username: tvoja puna Gmail adresa (npr. <code>ime@gmail.com</code>).</li>
-      <li>Password: <strong>ne</strong> tvoja obična Gmail lozinka — Google to blokira. Mora se koristiti <strong>App Password</strong>.</li>
+      <li>Password: <strong>ne</strong> tvoja obična Gmail lozinka - Google to blokira. Mora se koristiti <strong>App Password</strong>.</li>
       <li>Da napraviš App Password: uključi 2-Step Verification na Google nalogu, pa idi na <code>myaccount.google.com → Security → App passwords</code>, generiši lozinku za "Mail" i nju upiši u Password polje ovde.</li>
       <li>From adresa: ista Gmail adresa. Primaoci: tvoj mejl (ili više njih, odvojenih zarezom).</li>
     </ol>
@@ -535,7 +536,7 @@
     <ol>
       <li>Unesi URL koji prima POST zahteve sa JSON telom, npr. Discord webhook, n8n/Zapier webhook trigger, ili sopstveni endpoint.</li>
       <li>Payload sadrži: <code>event</code> (npr. NEW_DEVICE), <code>mac</code>, <code>ip</code>.</li>
-      <li>Custom header-i su opcioni — po jedan po liniji, format <code>Naziv: vrednost</code> (npr. <code>Authorization: Bearer xyz</code>).</li>
+      <li>Custom header-i su opcioni - po jedan po liniji, format <code>Naziv: vrednost</code> (npr. <code>Authorization: Bearer xyz</code>).</li>
       <li>Klikni <strong>"Test Webhook"</strong> da pošalješ probni POST i odmah vidiš da li endpoint prima podatke.</li>
     </ol>
     <div class="help-note">Isti skup događaja kao MQTT/SMTP, poštuje tihu zonu i trusted status uređaja.</div>
@@ -594,14 +595,14 @@
     <h2>Kako podesiti</h2>
     <ol>
       <li>U Omada kontroleru: <code>Settings → Platform Integration → Open API → Add New App</code>.</li>
-      <li>Mode: <strong>Client</strong> (NE Authorization Code — taj mod zahteva prijavu kroz browser i ne radi za pozadinski servis).</li>
+      <li>Mode: <strong>Client</strong> (NE Authorization Code - taj mod zahteva prijavu kroz browser i ne radi za pozadinski servis).</li>
       <li>Role: <strong>Viewer</strong> (dovoljno za čitanje liste klijenata).</li>
       <li>Izaberi <strong>Site</strong> kojoj aplikacija sme da pristupa, pa klikni <strong>Create</strong>.</li>
-      <li>Otvori kreiranu aplikaciju (View) — tu piše <strong>Omada ID</strong>, kao i <strong>Client ID</strong>/<strong>Client Secret</strong> (Secret se u punom obliku vidi samo odmah nakon kreiranja — kopiraj ga smesta).</li>
-      <li>Unesi sve to ovde, sačuvaj podešavanja, pa klikni <strong>"Učitaj lokacije"</strong> i <strong>izaberi lokaciju iz padajućeg menija</strong> — bez toga sinhronizacija neće raditi iako je konekcija uspešna.</li>
+      <li>Otvori kreiranu aplikaciju (View) - tu piše <strong>Omada ID</strong>, kao i <strong>Client ID</strong>/<strong>Client Secret</strong> (Secret se u punom obliku vidi samo odmah nakon kreiranja - kopiraj ga smesta).</li>
+      <li>Unesi sve to ovde, sačuvaj podešavanja, pa klikni <strong>"Učitaj lokacije"</strong> i <strong>izaberi lokaciju iz padajućeg menija</strong> - bez toga sinhronizacija neće raditi iako je konekcija uspešna.</li>
       <li>Sačuvaj ponovo (da bi se izabrana lokacija upisala), pa klikni "Testiraj konekciju".</li>
     </ol>
-    <div class="help-note">Bez ovoga svi uređaji se vide kao LAN — scanner sam vidi samo Ethernet interfejs kontejnera, ne i stvarnu Wi-Fi vezu.</div>
+    <div class="help-note">Bez ovoga svi uređaji se vide kao LAN - scanner sam vidi samo Ethernet interfejs kontejnera, ne i stvarnu Wi-Fi vezu.</div>
   </div>
   </div>
 
@@ -742,10 +743,10 @@
     <h2>Kako podesiti</h2>
     <ol>
       <li>Izaberi gotovu <strong>temu</strong> ili <strong>Custom</strong> za ručni izbor boja.</li>
-      <li><strong>Kartice</strong> — "Glass" stil koristi providnost + blur (staklen izgled); "Solid" je klasičan neproziran izgled.</li>
-      <li><strong>Pozadinska slika</strong> — otpremi sliku, pa podesi providnost/blur/osvetljenje da tekst ostane čitljiv preko nje.</li>
+      <li><strong>Kartice</strong> - "Glass" stil koristi providnost + blur (staklen izgled); "Solid" je klasičan neproziran izgled.</li>
+      <li><strong>Pozadinska slika</strong> - otpremi sliku, pa podesi providnost/blur/osvetljenje da tekst ostane čitljiv preko nje.</li>
     </ol>
-    <div class="help-note">Promene se odmah vide uživo dok podešavaš, pre čuvanja — ako odeš na drugi tab bez čuvanja, vraća se na sačuvano stanje.</div>
+    <div class="help-note">Promene se odmah vide uživo dok podešavaš, pre čuvanja - ako odeš na drugi tab bez čuvanja, vraća se na sačuvano stanje.</div>
   </div>
   </div>
 
@@ -774,9 +775,9 @@
     <h2>Kako podesiti</h2>
     <ol>
       <li><strong>Export</strong> preuzima sva podešavanja (SMTP/MQTT/Scanner/Webhook/Omada/Izgled) kao JSON fajl. Lozinke/Secret-i ostaju šifrovani u fajlu.</li>
-      <li><strong>Import</strong> učitava taj isti fajl nazad — koristi za brzo prenošenje podešavanja na drugi kontejner.</li>
+      <li><strong>Import</strong> učitava taj isti fajl nazad - koristi za brzo prenošenje podešavanja na drugi kontejner.</li>
     </ol>
-    <div class="help-note">Backup ne uključuje listu uređaja/istoriju — samo podešavanja aplikacije.</div>
+    <div class="help-note">Backup ne uključuje listu uređaja/istoriju - samo podešavanja aplikacije.</div>
   </div>
   </div>
 
@@ -785,7 +786,7 @@
     <h2 style="color:var(--bad)">Reset baze uređaja</h2>
     <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">
       Trajno briše <strong>sve uređaje</strong> i njihovu istoriju (događaje, IP istoriju) iz baze.
-      Koristi ovo npr. kada premeštaš kontejner na drugu mrežu/Proxmox — posle reseta, sledeće
+      Koristi ovo npr. kada premeštaš kontejner na drugu mrežu/Proxmox - posle reseta, sledeće
       skeniranje popunjava bazu potpuno novim uređajima. Podešavanja (MQTT/SMTP/Scanner/Webhook/Appearance)
       <strong>ostaju netaknuta</strong>.
     </div>
@@ -811,10 +812,10 @@
     <h2>Kako se koristi</h2>
     <ol>
       <li>Koristi kad seliš kontejner na drugu mrežu/Proxmox, ili želiš da počneš skeniranje iz čista.</li>
-      <li>Upiši tačno <code>RESET</code> u polje da se dugme aktivira — sprečava slučajni klik.</li>
+      <li>Upiši tačno <code>RESET</code> u polje da se dugme aktivira - sprečava slučajni klik.</li>
       <li>Briše uređaje i istoriju; podešavanja (SMTP/MQTT/Scanner/Omada/Izgled) ostaju netaknuta.</li>
     </ol>
-    <div class="help-note">Akcija se ne može poništiti — razmisli pre potvrde.</div>
+    <div class="help-note">Akcija se ne može poništiti - razmisli pre potvrde.</div>
   </div>
   </div>
 

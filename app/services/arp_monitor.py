@@ -216,7 +216,7 @@ class ArpMonitor:
         if ip and ip not in prof.ips:
             if learned and prof.ips:
                 reasons.append(
-                    f"skenira sa nove IP adrese {ip} (ranije: {', '.join(prof.ips[-3:])}) — moguće lažno predstavljanje tuđom MAC adresom"
+                    f"skenira sa nove IP adrese {ip} (ranije: {', '.join(prof.ips[-3:])}) - moguće lažno predstavljanje tuđom MAC adresom"
                 )
             prof.ips = (prof.ips + [ip])[-5:]
 

@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format is based on
 
 Versions before 1.0.0 were internal development milestones and were not tagged.
 
+## [1.2.0] - 2026-11-19
+
+### Added
+- Settings → Ping: reorder destinations by dragging the handle or with the up/down arrows (the order is also used on the Ping page) and edit address and name inline. Changing the address clears that destination's previous statistics.
+- API: `PUT /api/ping/targets/order`; `PATCH /api/ping/targets/{id}` accepts `address`.
+
+### Changed
+- UI text uses plain hyphens instead of long dashes.
+
 ## [1.1.0] - 2026-11-19
 
 ### Added
@@ -91,6 +100,7 @@ First public release.
 - Excel, CSV and PDF export; themes and custom background image.
 - systemd units for deployment in a Proxmox LXC container.
 
+[1.2.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.2.0
 [1.1.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.1.0
 [1.0.1]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.1
 [1.0.0]: https://github.com/zoomtronicOR/NDW---Network-device-watcher/releases/tag/v1.0.0

@@ -54,7 +54,8 @@ Event types: `NEW_DEVICE`, `DEVICE_OFFLINE`, `DEVICE_RETURNED`, `IP_CHANGED`, `H
 |---|---|---|
 | GET | `/api/ping/targets` | List targets |
 | POST | `/api/ping/targets` | `{"address": "8.8.8.8", "label": "Google DNS"}` |
-| PATCH | `/api/ping/targets/{id}` | `{"label": …, "enabled": true/false}` |
+| PATCH | `/api/ping/targets/{id}` | `{"address": …, "label": …, "enabled": true/false}`; a changed address deletes the target's previous results |
+| PUT | `/api/ping/targets/order` | `{"ids": [3, 1, 2]}` sets the display order (`sort_order`); returns the ordered list |
 | DELETE | `/api/ping/targets/{id}` | Delete target and its results |
 | GET | `/api/ping/series?hours=24&buckets=200` | Per target: `target`, `latest` (raw last result) and `history` aggregated into ~`buckets` time buckets (`rtt_avg` of reachable samples, `rtt_min`, `rtt_max`, average `packet_loss_pct`, `samples`, `unreachable_samples`). Without `hours`: the last `limit` raw samples. |
 

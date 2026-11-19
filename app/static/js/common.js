@@ -237,7 +237,7 @@ function isPrivateMac(mac) {
 function vendorLabel(device) {
   if (device.vendor) return escapeHtml(device.vendor);
   return isPrivateMac(device.mac_address)
-    ? '<span class="muted" title="Nasumična (privatna) MAC adresa — telefoni i virtuelne mašine je koriste, pa proizvođač ne može da se odredi iz MAC-a">privatna MAC</span>'
+    ? '<span class="muted" title="Nasumična (privatna) MAC adresa - telefoni i virtuelne mašine je koriste, pa proizvođač ne može da se odredi iz MAC-a">privatna MAC</span>'
     : '<span class="muted">nepoznat</span>';
 }
 

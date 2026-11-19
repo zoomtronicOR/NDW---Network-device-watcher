@@ -68,7 +68,7 @@ function renderCard(series) {
       <div class="ping-label">${escapeHtml(t.label) || ""}</div>
     </div>
     <div class="ping-stats">
-      <div class="stat"><span class="val">${latest && !unreachable ? latest.rtt_avg.toFixed(1) : "—"}</span><span class="lbl">ms (avg)</span></div>
+      <div class="stat"><span class="val">${latest && !unreachable ? latest.rtt_avg.toFixed(1) : "-"}</span><span class="lbl">ms (avg)</span></div>
       <div class="stat"><span class="val">${latest ? latest.packet_loss_pct.toFixed(0) : "-"}</span><span class="lbl">% loss</span></div>
       <div class="stat"><span class="val">${latest && latest.rtt_min != null ? latest.rtt_min.toFixed(1) : "-"}</span><span class="lbl">min ms</span></div>
       <div class="stat"><span class="val">${latest && latest.rtt_max != null ? latest.rtt_max.toFixed(1) : "-"}</span><span class="lbl">max ms</span></div>

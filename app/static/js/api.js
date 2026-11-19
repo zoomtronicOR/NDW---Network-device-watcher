@@ -83,6 +83,7 @@ const Api = {
   createPingTarget: (payload) => Api._send("POST", "/api/ping/targets", payload),
   updatePingTarget: (id, payload) => Api._send("PATCH", `/api/ping/targets/${id}`, payload),
   deletePingTarget: (id) => Api._send("DELETE", `/api/ping/targets/${id}`),
+  reorderPingTargets: (ids) => Api._send("PUT", "/api/ping/targets/order", { ids }),
   getPingSettings: () => Api._get("/api/settings/ping"),
   updatePingSettings: (payload) => Api._send("PUT", "/api/settings/ping", payload),
   getHistorySettings: () => Api._get("/api/settings/history"),

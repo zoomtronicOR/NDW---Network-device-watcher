@@ -250,7 +250,7 @@ function renderScanDetectionStatus(s) {
   el.className = `sd-status ${fresh ? "ok" : "bad"}`;
   el.innerHTML = fresh
     ? `<span class="led on"></span> Sniffer radi &middot; poslednji signal ${timeAgo(s.last_heartbeat_at)} &middot; ${s.packets_seen ?? 0} ARP paketa od pokretanja`
-    : `<span class="led off"></span> Sniffer servis se ne javlja${s.last_heartbeat_at ? ` (poslednji signal ${timeAgo(s.last_heartbeat_at)})` : ""} — proveri <code>systemctl status networkwatcher-sniffer</code>`;
+    : `<span class="led off"></span> Sniffer servis se ne javlja${s.last_heartbeat_at ? ` (poslednji signal ${timeAgo(s.last_heartbeat_at)})` : ""} - proveri <code>systemctl status networkwatcher-sniffer</code>`;
 }
 
 function renderKnownScanners(list) {
@@ -370,9 +370,9 @@ function updatePingRetentionNote() {
   const note = document.getElementById("hist-ping-note");
   note.textContent =
     v !== "unlimited" && days > 0 && days < 10
-      ? `Ping tab nudi prikaz do 10 dana — sa ${days} dana čuvanja duži periodi će biti delimično prazni.`
+      ? `Ping tab nudi prikaz do 10 dana - sa ${days} dana čuvanja duži periodi će biti delimično prazni.`
       : v === "unlimited"
-      ? "Ping merenja se nikad ne brišu — tabela raste neograničeno (pratiti zauzeće diska)."
+      ? "Ping merenja se nikad ne brišu - tabela raste neograničeno (pratiti zauzeće diska)."
       : "";
 }
 
@@ -538,7 +538,7 @@ function setOmadaSiteOptions(sites, selectedId, selectedName) {
     sites = [{ site_id: selectedId, name: selectedName || selectedId }, ...sites];
   }
   if (sites.length === 0) {
-    select.innerHTML = '<option value="">— klikni "Učitaj lokacije" —</option>';
+    select.innerHTML = '<option value="">- klikni "Učitaj lokacije" -</option>';
     return;
   }
   select.innerHTML = sites
@@ -656,7 +656,7 @@ document.getElementById("bk-import-btn").addEventListener("click", async () => {
     setResult("bk-result", true, `Uvezeno ${result.imported} podešavanja. Osveži stranicu da vidiš nove vrednosti.`);
   } catch (err) {
     console.error("importConfig failed", err);
-    setResult("bk-result", false, "Greška pri uvozu — proveri da li je fajl ispravan JSON backup.");
+    setResult("bk-result", false, "Greška pri uvozu - proveri da li je fajl ispravan JSON backup.");
   } finally {
     btn.disabled = false;
     btn.textContent = "Uvezi";
@@ -956,44 +956,150 @@ async function savePingSettings() {
 }
 document.getElementById("pg-save-btn").addEventListener("click", savePingSettings);
 
-async function loadPingTargets() {
+// Ping destinations: drag handle / arrows to reorder (order is used on the
+// Ping page too), inline edit of address and name, enable toggle, delete.
+let pingTargetsCache = [];
+
+function renderPingTargetRow(t, idx, total) {
+  return `
+    <div class="target-row" data-id="${t.id}" draggable="true">
+      <span class="drag-handle" title="Prevuci da promeniš redosled">&#10303;</span>
+      <span class="order-btns">
+        <button type="button" class="icon-btn pg-up" title="Pomeri gore" ${idx === 0 ? "disabled" : ""}>&#9650;</button>
+        <button type="button" class="icon-btn pg-down" title="Pomeri dole" ${idx === total - 1 ? "disabled" : ""}>&#9660;</button>
+      </span>
+      <span class="addr">${escapeHtml(t.address)}</span>
+      <span class="lbl">${escapeHtml(t.label) || ""}</span>
+      <label class="checkbox"><input type="checkbox" class="pg-enabled-toggle" ${t.enabled ? "checked" : ""} /> aktivan</label>
+      <button type="button" class="icon-btn pg-edit" title="Izmeni">&#9998;</button>
+      <button type="button" class="remove-btn" title="Ukloni">&times;</button>
+    </div>`;
+}
+
+async function saveOrder(ids) {
   try {
-    const targets = await Api.listPingTargets();
-    const list = document.getElementById("pg-targets-list");
-    if (!targets.length) {
-      list.innerHTML = '<div class="empty">Nema dodatih destinacija</div>';
+    pingTargetsCache = await Api.reorderPingTargets(ids);
+  } catch (err) {
+    console.error("reorder failed", err);
+    setResult("pg-result", false, "Greška pri čuvanju redosleda.");
+  }
+  renderPingTargets();
+}
+
+function startEditRow(row, t) {
+  row.draggable = false;
+  row.classList.add("editing");
+  row.innerHTML = `
+    <input type="text" class="pg-edit-address" value="${escapeHtml(t.address)}" placeholder="IP adresa / hostname" />
+    <input type="text" class="pg-edit-label" value="${escapeHtml(t.label) || ""}" placeholder="Naziv (opciono)" />
+    <button type="button" class="btn btn-primary pg-edit-save">Sačuvaj</button>
+    <button type="button" class="btn pg-edit-cancel">Otkaži</button>`;
+  const addr = row.querySelector(".pg-edit-address");
+  const lbl = row.querySelector(".pg-edit-label");
+  addr.focus();
+  const save = async () => {
+    const address = addr.value.trim();
+    if (!address) {
+      addr.classList.add("dtp-invalid");
       return;
     }
-    list.innerHTML = targets
-      .map(
-        (t) => `
-        <div class="target-row" data-id="${t.id}">
-          <span class="addr">${escapeHtml(t.address)}</span>
-          <span class="lbl">${escapeHtml(t.label) || ""}</span>
-          <label class="checkbox"><input type="checkbox" class="pg-enabled-toggle" ${t.enabled ? "checked" : ""} /> aktivan</label>
-          <button class="remove-btn" title="Ukloni">&times;</button>
-        </div>`
-      )
-      .join("");
+    if (address !== t.address && !confirm(`Promena adrese briše dosadašnju ping statistiku za ${t.address}. Nastaviti?`)) return;
+    try {
+      await Api.updatePingTarget(t.id, { address, label: lbl.value.trim() || null });
+      setResult("pg-result", true, "Destinacija izmenjena.");
+    } catch (err) {
+      console.error("updatePingTarget failed", err);
+      setResult("pg-result", false, err.message || "Greška pri izmeni destinacije.");
+    }
+    loadPingTargets();
+  };
+  row.querySelector(".pg-edit-save").addEventListener("click", save);
+  row.querySelector(".pg-edit-cancel").addEventListener("click", () => renderPingTargets());
+  [addr, lbl].forEach((el) =>
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") save();
+      if (e.key === "Escape") renderPingTargets();
+    })
+  );
+}
 
-    list.querySelectorAll(".target-row").forEach((row) => {
-      const id = Number(row.dataset.id);
-      row.querySelector(".pg-enabled-toggle").addEventListener("change", async (e) => {
-        try {
-          await Api.updatePingTarget(id, { enabled: e.target.checked });
-        } catch (err) {
-          console.error("toggle ping target failed", err);
-        }
-      });
-      row.querySelector(".remove-btn").addEventListener("click", async () => {
-        try {
-          await Api.deletePingTarget(id);
-          loadPingTargets();
-        } catch (err) {
-          console.error("deletePingTarget failed", err);
-        }
-      });
+function renderPingTargets() {
+  const list = document.getElementById("pg-targets-list");
+  const targets = pingTargetsCache;
+  if (!targets.length) {
+    list.innerHTML = '<div class="empty">Nema dodatih destinacija</div>';
+    return;
+  }
+  list.innerHTML = targets.map((t, i) => renderPingTargetRow(t, i, targets.length)).join("");
+  const ids = targets.map((t) => t.id);
+
+  list.querySelectorAll(".target-row").forEach((row, idx) => {
+    const id = Number(row.dataset.id);
+    const t = targets[idx];
+    row.querySelector(".pg-enabled-toggle").addEventListener("change", async (e) => {
+      try {
+        await Api.updatePingTarget(id, { enabled: e.target.checked });
+        t.enabled = e.target.checked;
+      } catch (err) {
+        console.error("toggle ping target failed", err);
+      }
     });
+    row.querySelector(".remove-btn").addEventListener("click", async () => {
+      try {
+        await Api.deletePingTarget(id);
+        loadPingTargets();
+      } catch (err) {
+        console.error("deletePingTarget failed", err);
+      }
+    });
+    row.querySelector(".pg-edit").addEventListener("click", () => startEditRow(row, t));
+    row.querySelector(".pg-up").addEventListener("click", () => {
+      const next = [...ids];
+      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+      saveOrder(next);
+    });
+    row.querySelector(".pg-down").addEventListener("click", () => {
+      const next = [...ids];
+      [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
+      saveOrder(next);
+    });
+
+    // drag & drop
+    row.addEventListener("dragstart", (e) => {
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", String(id));
+    });
+    row.addEventListener("dragend", () => {
+      row.classList.remove("dragging");
+      list.querySelectorAll(".drop-before, .drop-after").forEach((r) => r.classList.remove("drop-before", "drop-after"));
+    });
+    row.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const rect = row.getBoundingClientRect();
+      const after = e.clientY > rect.top + rect.height / 2;
+      row.classList.toggle("drop-after", after);
+      row.classList.toggle("drop-before", !after);
+    });
+    row.addEventListener("dragleave", () => row.classList.remove("drop-before", "drop-after"));
+    row.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const dragged = Number(e.dataTransfer.getData("text/plain"));
+      const after = row.classList.contains("drop-after");
+      row.classList.remove("drop-before", "drop-after");
+      if (!dragged || dragged === id) return;
+      const next = ids.filter((x) => x !== dragged);
+      const pos = next.indexOf(id) + (after ? 1 : 0);
+      next.splice(pos, 0, dragged);
+      saveOrder(next);
+    });
+  });
+}
+
+async function loadPingTargets() {
+  try {
+    pingTargetsCache = await Api.listPingTargets();
+    renderPingTargets();
   } catch (err) {
     console.error("loadPingTargets failed", err);
   }

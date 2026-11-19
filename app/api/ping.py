@@ -3,20 +3,27 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.ping_result import PingResult
 from app.models.ping_target import PingTarget
-from app.schemas.ping import PingResultOut, PingSeriesOut, PingTargetCreate, PingTargetOut, PingTargetUpdate
+from app.schemas.ping import (
+    PingResultOut,
+    PingSeriesOut,
+    PingTargetCreate,
+    PingTargetOrder,
+    PingTargetOut,
+    PingTargetUpdate,
+)
 
 router = APIRouter(prefix="/ping", tags=["ping"])
 
 
 @router.get("/targets", response_model=list[PingTargetOut])
 def list_targets(db: Session = Depends(get_db)) -> list[PingTarget]:
-    return db.execute(select(PingTarget).order_by(PingTarget.created_at)).scalars().all()
+    return db.execute(select(PingTarget).order_by(PingTarget.sort_order, PingTarget.created_at)).scalars().all()
 
 
 @router.post("/targets", response_model=PingTargetOut)
@@ -24,7 +31,8 @@ def create_target(payload: PingTargetCreate, db: Session = Depends(get_db)) -> P
     address = payload.address.strip()
     if not address:
         raise HTTPException(status_code=400, detail="Adresa ne sme biti prazna")
-    target = PingTarget(address=address, label=(payload.label or "").strip() or None)
+    next_order = (db.execute(select(func.max(PingTarget.sort_order))).scalar() or 0) + 1
+    target = PingTarget(address=address, label=(payload.label or "").strip() or None, sort_order=next_order)
     db.add(target)
     db.commit()
     db.refresh(target)
@@ -36,11 +44,39 @@ def update_target(target_id: int, payload: PingTargetUpdate, db: Session = Depen
     target = db.get(PingTarget, target_id)
     if target is None:
         raise HTTPException(status_code=404, detail="Destinacija nije pronađena")
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    changes = payload.model_dump(exclude_unset=True)
+    if "address" in changes:
+        address = (changes["address"] or "").strip()
+        if not address:
+            raise HTTPException(status_code=400, detail="Adresa ne sme biti prazna")
+        if address != target.address:
+            # A different address is a different measurement: drop the old
+            # results so charts don't mix two hosts.
+            db.execute(delete(PingResult).where(PingResult.target_id == target.id))
+        changes["address"] = address
+    if "label" in changes:
+        changes["label"] = (changes["label"] or "").strip() or None
+    for key, value in changes.items():
         setattr(target, key, value)
     db.commit()
     db.refresh(target)
     return target
+
+
+@router.put("/targets/order", response_model=list[PingTargetOut])
+def reorder_targets(payload: PingTargetOrder, db: Session = Depends(get_db)) -> list[PingTarget]:
+    """Persist the user-defined order (Settings -> Ping); used by the Ping page too."""
+    targets = {t.id: t for t in db.execute(select(PingTarget)).scalars()}
+    position = 1
+    for target_id in payload.ids:
+        if target_id in targets:
+            targets.pop(target_id).sort_order = position
+            position += 1
+    for target in sorted(targets.values(), key=lambda t: (t.sort_order, t.created_at)):
+        target.sort_order = position  # any ids not sent keep their relative order at the end
+        position += 1
+    db.commit()
+    return db.execute(select(PingTarget).order_by(PingTarget.sort_order, PingTarget.created_at)).scalars().all()
 
 
 @router.delete("/targets/{target_id}", status_code=204)
@@ -69,7 +105,7 @@ def get_series(
     buckets: at a few-second ping interval, 10 days is ~290k raw rows per
     target -- far too many to ship to the browser or draw.
     """
-    targets = db.execute(select(PingTarget).order_by(PingTarget.created_at)).scalars().all()
+    targets = db.execute(select(PingTarget).order_by(PingTarget.sort_order, PingTarget.created_at)).scalars().all()
 
     latest_by_target: dict[int, PingResultOut] = {}
     for target in targets:

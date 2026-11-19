@@ -60,7 +60,7 @@ NDW is five small Python processes sharing one PostgreSQL database. Each is a sy
 | `ip_history` | Every IP a device used | `device_id`, `ip_address`, `first_seen`, `last_seen` |
 | `settings` | All user configuration | `category`, `key` (unique together), `value` (JSON text), `is_secret`, `updated_at` |
 | `notification_log` | Every notification attempt | `device_id`, `notification_type` (MQTT/WEBHOOK/SMTP), `event_type`, `destination`, `status`, `error`, `timestamp` |
-| `ping_targets` | Ping monitoring targets | `address`, `label`, `enabled` |
+| `ping_targets` | Ping monitoring targets | `address`, `label`, `enabled`, `sort_order` |
 | `ping_results` | Raw ping samples (index on `target_id, timestamp`) | `target_id`, `timestamp`, `reachable`, `packet_loss_pct`, `rtt_min/avg/max/mdev` |
 
 `device_events`, `ip_history` and `ping_results` cascade on delete of their parent. Event and connection types are stored as plain strings (not database enums) so new types need no schema change. There is no snapshot table: the online-over-time chart and the Network Time Machine replay `device_events`.

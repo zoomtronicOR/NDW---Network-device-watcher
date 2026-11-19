@@ -89,7 +89,7 @@ Pick a moment in the past (date-time picker or the *Sada / −1h / −24h / −7
 Settings are grouped in sub-tabs; each has a *Kako podesiti* (how to configure) help card. Every option and its default is listed in the [configuration reference](configuration.md).
 
 - **Scanner** — scan interval, offline threshold and minimum absence, interface, probe timeout, network ranges, reverse-DNS; and the **network scan / IP conflict detection** panel with the list of known scanners and what has been learned about each.
-- **Ping** — ping interval, RTT color bands, targets (add, enable/disable, delete).
+- **Ping** — ping interval, RTT color bands and targets: add, enable/disable, edit address and name (✎; a new address clears the old statistics), reorder by dragging the handle or with ▲/▼ (the same order is used on the Ping page), delete.
 - **Istorija** — retention of event history and of ping statistics; *Pokreni čišćenje sada* runs the cleanup immediately.
 - **MQTT** / **SMTP** — broker / mail server settings with *Test MQTT* / *Send Test Email*. Below them: **Tiha zona** (quiet hours) with time zone.
 - **Webhook** — URL, custom headers, *Test Webhook*.
